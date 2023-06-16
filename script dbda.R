@@ -387,7 +387,7 @@ print(comptes)
 ###############################################################################
 ###############################################################################
 
-
+# Passage des variables catégorielles et binaire en facteurs 
 
 data$Age <- as.factor(data$Age)
 data$Gender <- as.factor(data$Gender)
@@ -399,6 +399,14 @@ data$Malchro <- as.factor(data$Malchro)
 data$Loifin <- as.factor(data$Loifin)
 data$Nomloi <- as.factor(data$Nomloi)
 data$Diranti <- as.factor(data$Diranti)
+
+# Transformation en dummies des variables en Oui/Non et en Sait/Ne sait pas 
+
+binaryloifin <- c(data$Loifin)
+binaryloifin <- ifelse(binaryloifin == "Oui", 1, 0)
+data$Loifin <- binaryloifin
+rm(binaryloifin)
+
 
 # Qui connait loifin selon age 
 
@@ -650,6 +658,8 @@ print(pourcentage_age)
 
 # 36,1% ont 18-30, 16,7% ont 31-40, 22,2% ont 41-50, 13,9% ont 51-60, 5,56% ont 
 # 61-70 et 5,54% ont 70+
+
+
 
 
 -------------------------------------------------------------------------------
