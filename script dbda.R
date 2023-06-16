@@ -628,7 +628,10 @@ summary(model)
 # ASH. Les résultats sont très significatifs. Toutes choses égales par ailleurs, 
 # Le fait d'être étudiant, AS, infirmière ou médecin augmente de manière 
 # statistiquement significative les chances de connaitre la loi de fin de vie,
-# par rapport à un agent de service hospitalier. 
+# par rapport à un agent de service hospitalier. Les p-value sont très faibles et 
+# les coefficients très élevés. Le coef le plus élevé est celui pour les médecins.
+# Il semblent que ce soient ceux qui ont eu le plus de bonnes réponses, puis les 
+# infirmières, puis les étudiants. 
 
 ###############################################################################
 
