@@ -418,6 +418,11 @@ binaryda <- ifelse(binaryda == "Oui", 1, 0)
 data$Diranti <- binaryda
 rm(binaryda)
 
+binarymalchro <- c(data$Malchro)
+binarymalchro <- ifelse(binarymalchro == "Oui", 1, 0)
+data$Malchro <- binarymalchro
+rm(binarymalchro)
+
 -------------------------------------------------------------------------------
   
   
@@ -425,7 +430,7 @@ rm(binaryda)
 
 
 oui_reponses <- data %>%
-  filter(!is.na(Loifin), Loifin == "Oui")
+  filter(!is.na(Loifin), Loifin == "1")
 
 pourcentage_age <- oui_reponses %>%
   group_by(Age) %>%
@@ -435,7 +440,6 @@ print(pourcentage_age)
 
 # Parmi ceux qui connaissent la loi de fin de vie, 25,7% sont 18-30, 18,5% sont 
 # 31-40, 9% sont 41-50, 17,8% sont 51-60, 20,9% sont 61-70 et 7% sont 70+
-
 
 
 # Calcul du coefficient de corrélation de Cramer entre "Loifin" et "Age"
@@ -457,10 +461,8 @@ summary(modele)
   
 # Qui connait loifin selon genre
 
-donnees <- data
-
-oui_reponses <- donnees %>%
-  filter(!is.na(Loifin), Loifin == "Oui")
+oui_reponses <- data %>%
+  filter(!is.na(Loifin), Loifin == "1")
 
 pourcentage_genre <- oui_reponses %>%
   group_by(Gender) %>%
@@ -493,7 +495,7 @@ summary(modele)
 
 
 oui_reponses <- data %>%
-  filter(!is.na(Loifin), Loifin == "Oui")
+  filter(!is.na(Loifin), Loifin == "1")
 
 pourcentage_city <- oui_reponses %>%
   group_by(City) %>%
@@ -519,7 +521,7 @@ summary(modele)
 
 
 oui_reponses <- data %>%
-  filter(!is.na(Loifin), Loifin == "Oui")
+  filter(!is.na(Loifin), Loifin == "1")
 
 pourcentage_csp <- oui_reponses %>%
   group_by(CSP) %>%
@@ -553,10 +555,8 @@ summary(model)
 
 # Qui connait loifin selon maladie chronique 
 
-donnees <- data
-
-oui_reponses <- donnees %>%
-  filter(!is.na(Loifin), Loifin == "Oui")
+oui_reponses <- data %>%
+  filter(!is.na(Loifin), Loifin == "1")
 
 pourcentage_malchro <- oui_reponses %>%
   group_by(Malchro) %>%
@@ -567,11 +567,9 @@ print(pourcentage_malchro)
   
 # 76,4% n'ont pas de maladie chronique, 23,6% ont une maladie chronique 
 
-donnees <- data
 
-
-oui_reponses <- donnees %>%
-  filter(!is.na(Loifin), Loifin == "Oui", !is.na(Malchro), Malchro == "Oui")
+oui_reponses <- data %>%
+  filter(!is.na(Loifin), Loifin == "1", !is.na(Malchro), Malchro == "1")
 
 pourcentage_typemalchro <- oui_reponses %>%
   group_by(Typemalchro) %>%
@@ -614,7 +612,7 @@ percentage_med
 cramer_coeff <- assocstats(table(data$Loifin, data$Medical))$cramer
 print(cramer_coeff)
 
-# Le coefficient est le plus élevé qu'on a pu trouver jusqu'ici, de 0,3. il semble 
+# Le coefficient est le plus élevé qu'on a pu trouver jusqu'ici, de 0,32. il semble 
 # que cette nouvelle variable pour savoir si l'individu est dans le milieu médical
 # ou non est très pertinente. 
 
@@ -642,18 +640,9 @@ summary(model)
 
 ###############################################################################
 
-# Qui connait nom loifin selon age 
+# Qui connait le nom de la loifin selon age 
 
-donnees <- data
 
-reponses <- donnees %>%
-  filter(Nomloi == "Sait")
-
-pourcentage_age <- reponses %>%
-  group_by(Age) %>%
-  summarise(Percentage = n() / nrow(reponses) * 100)
-
-print(pourcentage_age)
 
 # 36,1% ont 18-30, 16,7% ont 31-40, 22,2% ont 41-50, 13,9% ont 51-60, 5,56% ont 
 # 61-70 et 5,54% ont 70+
@@ -663,7 +652,7 @@ print(pourcentage_age)
 
 -------------------------------------------------------------------------------
 
-# Qui connait nom loifin selon genre
+# Qui connait le nom de la loifin selon genre
 
 donnees <- data
 
@@ -682,7 +671,7 @@ print(pourcentage_gender)
 -------------------------------------------------------------------------------
 
 
-# Qui connait nom loifin selon ville 
+# Qui connait le nom de la loifin selon ville 
 
 donnees <- data
 
@@ -699,7 +688,7 @@ print(pourcentage_city)
 -------------------------------------------------------------------------------
   
   
-# Qui connait nom loifin selon CSP
+# Qui connait le nom de la loifin selon CSP
 
 donnees <- data
 
@@ -717,12 +706,19 @@ print(pourcentage_csp)
 
 -------------------------------------------------------------------------------
 
-# Qui connait nom loifin selon maladie chronique 
+# Qui connait le nom de la loifin selon maladie chronique 
 
 
 
-# Qui connait nom loifin selon type maladie chronique
+# Qui connait le nom de la loifin selon type maladie chronique
 
+  
+-------------------------------------------------------------------------------
+
+# Qui connait le nom de la loi fin selon milieu médical et niveau d'expertise
+  
+
+  
   
   
   
