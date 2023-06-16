@@ -15,10 +15,11 @@ library(dslabs)
 library(stringdist)
 library(stringr)
 library(vcd)
+library("stats")
 
 # Importation des données
 
-data <- read_excel("C:/Users/epcmic/OneDrive/Bureau/Analyse de données Thèse/data.xlsx")
+data <- read_excel("C:/Users/epcmic/OneDrive/Bureau/GitHub/Analyse_directives_anticipees/data.xlsx")
 View(data)
 
 
@@ -66,6 +67,7 @@ rm(datanona)
 rm(databis)
 rm(intervals)
 rm(labels)
+rm(convert_age)
 
 # Statistique âge 
 
@@ -213,6 +215,7 @@ data$Nomloi <- ifelse(sapply(dataset$data.Nomloi, check_correspondance,
 
 rm(dataset)
 rm(mots_reference)
+rm(check_correspondance)
 
 table(data$Nomloi)
 # 476 ne savent pas, 36 savent, en comptant les fautes d'othographe
@@ -236,6 +239,9 @@ table(data$Dirantibis)
 reponses_sep <- strsplit(data$Dirantibis, ",")
 comptes <- table(unlist(reponses_sep))
 print(comptes)
+
+rm(comptes)
+rm(reponses_sep)
 
 # Hopital = 194, Ecole = 86, Un ami = 45, Medecin traitant = 31, 
 # Autre médecin = 91, Solo = 104, Média = 268
@@ -377,9 +383,22 @@ print(comptes)
 
 
 ###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
 
 
 
+data$Age <- as.factor(data$Age)
+data$Gender <- as.factor(data$Gender)
+data$City <- as.factor(data$City)
+data$CSP <- as.factor(data$CSP)
+data$Medical <- as.factor(data$Medical)
+data$Niveaumed <- as.factor(data$Niveaumed)
+data$Malchro <- as.factor(data$Malchro)
+data$Loifin <- as.factor(data$Loifin)
+data$Nomloi <- as.factor(data$Nomloi)
+data$Diranti <- as.factor(data$Diranti)
 
 # Qui connait loifin selon age 
 
@@ -413,8 +432,8 @@ summary(modele)
 # La catégorie d'âge '70 et plus' présente un coefficient de régression estimé 
 # à 1.59215, avec une signification statistique élevée (<0.001). Cela suggère que 
 # les individus âgés de 70 ans et plus ont une probabilité significativement plus 
-# élevée de répondre 'Oui' dans la variable 'Loifin' par rapport à la catégorie 18-30 
-# toutes choses étant égales par ailleurs
+# élevée de connaitre la loi par rapport à la catégorie 18-30, toutes choses étant 
+# égales par ailleurs. 
 
 
 -------------------------------------------------------------------------------
@@ -450,7 +469,7 @@ modele <- glm(Loifin ~ Gender, data = donnees, family = binomial)
 summary(modele)
 
 # Etre une femme est positivement associé à la prob de répondre oui car p-value 
-# significative et coefficient supérieur à 0,5. 
+# significative et coefficient supérieur à 0,57. 
 
 
 -------------------------------------------------------------------------------
@@ -510,9 +529,9 @@ donnees <- data
 donnees$Loifin <- ifelse(donnees$Loifin == "Oui", 1, 0)
 modele <- glm(Loifin ~ CSP, data = donnees, family = binomial)
 summary(modele)
-# Pas la bonne CSP en référence alors changement de référence pour ouvrier
+# Pas la bonne CSP en référence alors changement de référence pour ouvrier, 
+# population qui semble le moins connaitre la loi. 
 
-donnees$CSP <- as.factor(donnees$CSP)
 class(donnees$CSP)
 donnees$CSP <- relevel(donnees$CSP, ref = "Ouvrier")
 model <- glm(Loifin ~ CSP, family = binomial, data = donnees)
@@ -559,9 +578,36 @@ print(pourcentage_typemalchro)
 # maladie neurologique. Le reste n'a pas précisé la maladie. 
 
 
+cramer_coeff <- assocstats(table(data$Loifin, data$Malchro))$cramer
+print(cramer_coeff)
+# Il ne semble pas y avoir de corrélation entre le fait d'avoir une maladie chronique 
+# et le fait de connaitre la loi de fin de vie. Si ce résultat semble pourtant contre-
+# intuitif, cela peut être du à la taille de l'échantillon et à la sur-représentation
+# de personnel médical dans les individus. Le coefficient est de 0,003...
+
+model <- glm(Loifin ~ Malchro, data = data, family = "binomial")
+summary(model)
+
+# Pas de résultat intéressant sur la maladie chronique ici. Aucun résultat
+# significatif. 
+
+
 -------------------------------------------------------------------------------
   
+# Qui connait loifin selon milieu et niveau médical
+  
 
+oui_loifin <- subset(data, Loifin == "Oui")
+percentage_med <- mean(oui_loifin$Medical == 1) * 100
+percentage_med
+
+# 46,7% des gens qui connaissent la loi de fin de vie dans cet échantillon sont 
+# dans le milieu médical !
+
+cramer_coeff <- assocstats(table(data$Loifin, data$Medical))$cramer
+print(cramer_coeff)
+
+# Le coefficient est le plus élevé qu'on a pu trouver jusqu'ici, 
 
 ###############################################################################
 
