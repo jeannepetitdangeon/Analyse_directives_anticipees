@@ -379,13 +379,14 @@ print(comptes)
 
 
 
+###############################################################################
+###############################################################################
+###############################################################################
+###############################################################################
 
 
 
-###############################################################################
-###############################################################################
-###############################################################################
-###############################################################################
+
 
 # Passage des variables catégorielles et binaire en facteurs 
 
@@ -400,12 +401,22 @@ data$Loifin <- as.factor(data$Loifin)
 data$Nomloi <- as.factor(data$Nomloi)
 data$Diranti <- as.factor(data$Diranti)
 
-# Transformation en dummies des variables en Oui/Non et en Sait/Ne sait pas 
+# Transformation des variables en Oui/Non et en Sait/Ne sait pas en dummies
 
 binaryloifin <- c(data$Loifin)
 binaryloifin <- ifelse(binaryloifin == "Oui", 1, 0)
 data$Loifin <- binaryloifin
 rm(binaryloifin)
+
+binarynom <- c(data$Nomloi)
+binarynom <- ifelse(binarynom == "Sait", 1, 0)
+data$Nomloi <- binarynom
+rm(binarynom)
+
+binaryda <- c(data$Diranti)
+binaryda <- ifelse(binaryda == "Oui", 1, 0)
+data$Diranti <- binaryda
+rm(binaryda)
 
 
 # Qui connait loifin selon age 
