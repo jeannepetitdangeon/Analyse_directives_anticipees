@@ -418,12 +418,13 @@ binaryda <- ifelse(binaryda == "Oui", 1, 0)
 data$Diranti <- binaryda
 rm(binaryda)
 
-
+-------------------------------------------------------------------------------
+  
+  
 # Qui connait loifin selon age 
 
-donnees <- data
 
-oui_reponses <- donnees %>%
+oui_reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "Oui")
 
 pourcentage_age <- oui_reponses %>%
@@ -442,11 +443,7 @@ cramer_coeff <- assocstats(table(data$Loifin, data$Age))$cramer
 print(cramer_coeff)
 # Coefficient à 0,14 alors faible corrélation entre l'âge et la connaissance
 
-
-
-donnees <- data 
-donnees$Loifin <- ifelse(donnees$Loifin == "Oui", 1, 0)
-modele <- glm(Loifin ~ Age, data = donnees, family = binomial)
+modele <- glm(Loifin ~ Age, data = data, family = binomial)
 summary(modele)
 # La catégorie d'âge '70 et plus' présente un coefficient de régression estimé 
 # à 1.59215, avec une signification statistique élevée (<0.001). Cela suggère que 
@@ -482,9 +479,7 @@ print(cramer_coeff)
 # 0,12 alors faible correlation 
 
 
-donnees <- data 
-donnees$Loifin <- ifelse(donnees$Loifin == "Oui", 1, 0)
-modele <- glm(Loifin ~ Gender, data = donnees, family = binomial)
+modele <- glm(Loifin ~ Gender, data = data, family = binomial)
 summary(modele)
 
 # Etre une femme est positivement associé à la prob de répondre oui car p-value 
@@ -496,9 +491,8 @@ summary(modele)
   
 # Qui connait loifin selon ville 
 
-donnees <- data
 
-oui_reponses <- donnees %>%
+oui_reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "Oui")
 
 pourcentage_city <- oui_reponses %>%
@@ -514,9 +508,7 @@ cramer_coeff <- assocstats(table(data$Loifin, data$City))$cramer
 print(cramer_coeff)  
 # 0,04 alors pas du tout correlé. 
 
-donnees <- data 
-donnees$Loifin <- ifelse(donnees$Loifin == "Oui", 1, 0)
-modele <- glm(Loifin ~ City, data = donnees, family = binomial)
+modele <- glm(Loifin ~ City, data = data, family = binomial)
 summary(modele)
 
 # Aucun résultat significatif. 
@@ -525,10 +517,8 @@ summary(modele)
 
 # Qui connait loifin selon CSP
 
-  
-donnees <- data
 
-oui_reponses <- donnees %>%
+oui_reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "Oui")
 
 pourcentage_csp <- oui_reponses %>%
@@ -542,18 +532,16 @@ print(pourcentage_csp)
 
 cramer_coeff <- assocstats(table(data$Loifin, data$CSP))$cramer
 print(cramer_coeff) 
-# 0,2, Faible corrélation mais la régression peut être intéressante 
+# 0,23, Faible corrélation mais la régression peut être intéressante 
 
-donnees <- data 
-donnees$Loifin <- ifelse(donnees$Loifin == "Oui", 1, 0)
-modele <- glm(Loifin ~ CSP, data = donnees, family = binomial)
+modele <- glm(Loifin ~ CSP, data = data, family = binomial)
 summary(modele)
 # Pas la bonne CSP en référence alors changement de référence pour ouvrier, 
 # population qui semble le moins connaitre la loi. 
 
-class(donnees$CSP)
-donnees$CSP <- relevel(donnees$CSP, ref = "Ouvrier")
-model <- glm(Loifin ~ CSP, family = binomial, data = donnees)
+class(data$CSP)
+data$CSP <- relevel(data$CSP, ref = "Ouvrier")
+model <- glm(Loifin ~ CSP, family = binomial, data = data)
 summary(model)
 
 # Résultats intéressants ! ce qui est très significatif : Cadre sup est associé
