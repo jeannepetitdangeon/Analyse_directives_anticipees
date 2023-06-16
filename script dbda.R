@@ -607,7 +607,28 @@ percentage_med
 cramer_coeff <- assocstats(table(data$Loifin, data$Medical))$cramer
 print(cramer_coeff)
 
-# Le coefficient est le plus élevé qu'on a pu trouver jusqu'ici, 
+# Le coefficient est le plus élevé qu'on a pu trouver jusqu'ici, de 0,3. il semble 
+# que cette nouvelle variable pour savoir si l'individu est dans le milieu médical
+# ou non est très pertinente. 
+
+model <- glm(Loifin ~ Medical, data = data, family = "binomial")
+summary(model)
+
+# Le coefficient est de 1,51 et la p-value est faible alors le résultat est très
+# significatif. Le fait d'être dans le milieu médical augmente grandement les 
+# chances de connaitre la loi dans cet échantillon. Regardons maintenant selon 
+# le niveau d'expertise médicale. 
+
+class(data$Niveaumed)
+data$Niveaumed <- relevel(data$Niveaumed, ref = "ASH")
+model <- glm(Loifin ~ Niveaumed, family = binomial, data = data)
+summary(model)
+
+# Après pluiseurs essais, la catégorie de référence la plus intéressante est 
+# ASH. Les résultats sont très significatifs. Toutes choses égales par ailleurs, 
+# Le fait d'être étudiant, AS, infirmière ou médecin augmente de manière 
+# statistiquement significative les chances de connaitre la loi de fin de vie,
+# par rapport à un agent de service hospitalier. 
 
 ###############################################################################
 
