@@ -681,6 +681,14 @@ print(pourcentage)
 
 # 8,3% sont des hommes, 91,7% sont des femmes 
 
+cramer_coeff <- assocstats(table(data$Nomloi, data$Gender))$cramer
+print(cramer_coeff)
+# 0,08 alors pas de corrélation statistique 
+
+Reg <- glm(Nomloi ~ Gender, data = data, family = binomial)
+summary(Reg)
+# Pas de résultat très significatif mais il semble qu'être une face a un impact 
+# positif sur la probabilité de connaitre la loi. 
 
 -------------------------------------------------------------------------------
 
@@ -697,6 +705,15 @@ pourcentage_city <- reponses %>%
 print(pourcentage_city)
 
 # 38,8% de village, 30,6 d'une petite ville et 30,6% d'une grande ville. 
+
+cramer_coeff <- assocstats(table(data$Nomloi, data$City))$cramer
+print(cramer_coeff)
+# 0,05 alors pas de corrélation
+
+Reg <- glm(Nomloi ~ City, data = data, family = binomial)
+summary(Reg)
+# Aucun résultat significatif. 
+
 -------------------------------------------------------------------------------
   
   
@@ -713,6 +730,15 @@ print(pourcentage_csp)
 
 
 # 38,9%  prof inter, 36,1% Cadre, 16,7% employé, 2,74% ouvriers, 5,56% sans acti
+
+
+cramer_coeff <- assocstats(table(data$Nomloi, data$CSP))$cramer
+print(cramer_coeff)
+# Nan
+
+Reg <- glm(Nomloi ~ CSP, data = data, family = binomial)
+summary(Reg)
+# Pas de résultat significatif. 
 
 -------------------------------------------------------------------------------
 
@@ -756,3 +782,7 @@ print(pourcentage_csp)
 
 
 # Qui connait DA selon maladie chronique 
+
+
+
+# Qui connait DA selon milieu et niveau d'expertise médical
