@@ -15,7 +15,7 @@ library(dslabs)
 library(stringdist)
 library(stringr)
 library(vcd)
-library("stats")
+library(stats)
 
 # Importation des données
 
@@ -317,9 +317,10 @@ print(top_reponses)
 
 table(donnees$Rpzda)
 
-# 457 ont dit un choix, Une anticipation 354, 422 le respect, 325 la liberté, 
+# En tout, 457 ont dit un choix, Une anticipation 354, 422 le respect, 325 la liberté, 
 # 110 la sécurité, 241 un soulagement, 183 une responsabilité, 46 une angoisse
 
+rm(donnees)
 
 -------------------------------------------------------------------------------
 
@@ -330,9 +331,7 @@ table(data$Vousda)
 # 77 ont rédigé leur DA. 
 
 
-donnees <- data
-
-oui_reponses <- donnees %>%
+oui_reponses <- data %>%
   filter(!is.na(Vousda), Vousda == "Oui")
 
 comptage_genre <- oui_reponses %>%
@@ -346,9 +345,7 @@ print(comptage_genre)
 # 13 sont des hommes et 64 sont des femmes 
 
 
-donnees <- data
-
-oui_reponses <- donnees %>%
+oui_reponses <- data %>%
   filter(!is.na(Vousda), Vousda == "Oui")
 
 comptage_age <- oui_reponses %>%
@@ -654,10 +651,8 @@ summary(model)
 
 # Qui connait le nom de la loifin selon genre
 
-donnees <- data
-
-reponses <- donnees %>%
-  filter(Nomloi == "Sait")
+reponses <- data %>%
+  filter(Nomloi == "1")
 
 pourcentage_gender <- reponses %>%
   group_by(Gender) %>%
@@ -673,10 +668,8 @@ print(pourcentage_gender)
 
 # Qui connait le nom de la loifin selon ville 
 
-donnees <- data
-
-reponses <- donnees %>%
-  filter(Nomloi == "Sait")
+reponses <- data %>%
+  filter(Nomloi == "1")
 
 pourcentage_city <- reponses %>%
   group_by(City) %>%
@@ -690,10 +683,8 @@ print(pourcentage_city)
   
 # Qui connait le nom de la loifin selon CSP
 
-donnees <- data
-
-reponses <- donnees %>%
-  filter(Nomloi == "Sait")
+reponses <- data %>%
+  filter(Nomloi == "1")
 
 pourcentage_csp <- reponses %>%
   group_by(CSP) %>%
