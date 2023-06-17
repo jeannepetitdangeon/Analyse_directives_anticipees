@@ -153,9 +153,9 @@ table(data$Malchro)
 # 808 personnes sans maladie chronique, 252 avec 
 
 
-
 -------------------------------------------------------------------------------
 
+  
 # Types de maladie chronique 
 
 table(data$Typemalchro)
@@ -331,10 +331,10 @@ table(data$Vousda)
 # 77 ont rédigé leur DA. 
 
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Vousda), Vousda == "Oui")
 
-comptage_genre <- oui_reponses %>%
+comptage_genre <- reponses %>%
   group_by(Gender) %>%
   summarise(Count = n())
 
@@ -345,10 +345,10 @@ print(comptage_genre)
 # 13 sont des hommes et 64 sont des femmes 
 
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Vousda), Vousda == "Oui")
 
-comptage_age <- oui_reponses %>%
+comptage_age <- reponses %>%
   group_by(Age) %>%
   summarise(Count = n())
 
@@ -373,6 +373,8 @@ print(comptes)
 # Peur que les volontés ne soient pas respectées revient 30 fois, confiance en les proches
 # revient 138 fois, manque d'info revient 143 fois, pas concerné 241 fois, ne savent pas 
 # comment faire 54 fois. 
+
+
 
 
 
@@ -426,14 +428,14 @@ rm(binarymalchro)
 # Qui connait loifin selon age 
 
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
 
-pourcentage_age <- oui_reponses %>%
+pourcentage <- reponses %>%
   group_by(Age) %>%
-  summarise(Percentage = n() / nrow(oui_reponses) * 100)
+  summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_age)
+print(pourcentage)
 
 # Parmi ceux qui connaissent la loi de fin de vie, 25,7% sont 18-30, 18,5% sont 
 # 31-40, 9% sont 41-50, 17,8% sont 51-60, 20,9% sont 61-70 et 7% sont 70+
@@ -444,8 +446,9 @@ cramer_coeff <- assocstats(table(data$Loifin, data$Age))$cramer
 print(cramer_coeff)
 # Coefficient à 0,14 alors faible corrélation entre l'âge et la connaissance
 
-modele <- glm(Loifin ~ Age, data = data, family = binomial)
-summary(modele)
+data$Age <- relevel(data$CSP, ref = "18-30")
+Reg <- glm(Loifin ~ Age, data = data, family = binomial)
+summary(Reg)
 # La catégorie d'âge '70 et plus' présente un coefficient de régression estimé 
 # à 1.59215, avec une signification statistique élevée (<0.001). Cela suggère que 
 # les individus âgés de 70 ans et plus ont une probabilité significativement plus 
@@ -458,16 +461,16 @@ summary(modele)
   
 # Qui connait loifin selon genre
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
 
-pourcentage_genre <- oui_reponses %>%
+pourcentage <- reponses %>%
   group_by(Gender) %>%
-  summarise(Percentage = n() / nrow(oui_reponses) * 100)
+  summarise(Percentage = n() / nrow(reponses) * 100)
 
-pourcentage_genre$Gender <- ifelse(pourcentage_genre$Gender == 1, "Femme", "Homme")
+pourcentage$Gender <- ifelse(pourcentage$Gender == 1, "Femme", "Homme")
 
-print(pourcentage_genre)
+print(pourcentage)
 
 # Ceux qui connaissent, 20,9% sont des hommes, 79,1% sont des femmes. 
   
@@ -478,8 +481,8 @@ print(cramer_coeff)
 # 0,12 alors faible correlation 
 
 
-modele <- glm(Loifin ~ Gender, data = data, family = binomial)
-summary(modele)
+Reg <- glm(Loifin ~ Gender, data = data, family = binomial)
+summary(Reg)
 
 # Etre une femme est positivement associé à la prob de répondre oui car p-value 
 # significative et coefficient supérieur à 0,57. 
@@ -491,14 +494,14 @@ summary(modele)
 # Qui connait loifin selon ville 
 
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
 
-pourcentage_city <- oui_reponses %>%
+pourcentage <- reponses %>%
   group_by(City) %>%
-  summarise(Percentage = n() / nrow(oui_reponses) * 100)
+  summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_city)
+print(pourcentage)
 
   
 # 48,4% viennent d'un village, 27,3 d'une petite ville, 24,3 d'une grande ville.
@@ -507,8 +510,9 @@ cramer_coeff <- assocstats(table(data$Loifin, data$City))$cramer
 print(cramer_coeff)  
 # 0,04 alors pas du tout correlé. 
 
-modele <- glm(Loifin ~ City, data = data, family = binomial)
-summary(modele)
+data$City <- relevel(data$City, ref = "Un village")
+Reg <- glm(Loifin ~ City, data = data, family = binomial)
+summary(Reg)
 
 # Aucun résultat significatif. 
 
@@ -517,14 +521,14 @@ summary(modele)
 # Qui connait loifin selon CSP
 
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
 
-pourcentage_csp <- oui_reponses %>%
+pourcentage <- reponses %>%
   group_by(CSP) %>%
-  summarise(Percentage = n() / nrow(oui_reponses) * 100)
+  summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_csp)
+print(pourcentage)
 
 # 3% sont artisans, 25,1% sont cadre sup, 28,3% sont employé, 3,5% sont ouvriers, 
 # 33% sont en profession intermédiaire, 7,1% sont sans activité. 
@@ -533,15 +537,15 @@ cramer_coeff <- assocstats(table(data$Loifin, data$CSP))$cramer
 print(cramer_coeff) 
 # 0,23, Faible corrélation mais la régression peut être intéressante 
 
-modele <- glm(Loifin ~ CSP, data = data, family = binomial)
-summary(modele)
+Reg <- glm(Loifin ~ CSP, data = data, family = binomial)
+summary(Reg)
 # Pas la bonne CSP en référence alors changement de référence pour ouvrier, 
 # population qui semble le moins connaitre la loi. 
 
 class(data$CSP)
 data$CSP <- relevel(data$CSP, ref = "Ouvrier")
-model <- glm(Loifin ~ CSP, family = binomial, data = data)
-summary(model)
+Reg <- glm(Loifin ~ CSP, family = binomial, data = data)
+summary(Reg)
 
 # Résultats intéressants ! ce qui est très significatif : Cadre sup est associé
 # positivement au fait de connaitre, employé aussi et prof inter aussi, par rapport 
@@ -552,27 +556,27 @@ summary(model)
 
 # Qui connait loifin selon maladie chronique 
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
 
-pourcentage_malchro <- oui_reponses %>%
+pourcentage <- reponses %>%
   group_by(Malchro) %>%
-  summarise(Percentage = n() / nrow(oui_reponses) * 100)
+  summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_malchro)
+print(pourcentage)
 
   
 # 76,4% n'ont pas de maladie chronique, 23,6% ont une maladie chronique 
 
 
-oui_reponses <- data %>%
+reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1", !is.na(Malchro), Malchro == "1")
 
-pourcentage_typemalchro <- oui_reponses %>%
+pourcentage <- reponses %>%
   group_by(Typemalchro) %>%
-  summarise(Percentage = n() / nrow(oui_reponses) * 100)
+  summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_typemalchro)
+print(pourcentage)
 
 # Parmi ceux qui connaissent la Loifin et qui ont une maladie chronique, 1,3% 
 # ont une maladie auto immune, 23,8% ont une maladie de type Autre, 15% ont un
@@ -587,8 +591,8 @@ print(cramer_coeff)
 # intuitif, cela peut être du à la taille de l'échantillon et à la sur-représentation
 # de personnel médical dans les individus. Le coefficient est de 0,003...
 
-model <- glm(Loifin ~ Malchro, data = data, family = "binomial")
-summary(model)
+Reg <- glm(Loifin ~ Malchro, data = data, family = "binomial")
+summary(Reg)
 
 # Pas de résultat intéressant sur la maladie chronique ici. Aucun résultat
 # significatif. 
@@ -600,8 +604,8 @@ summary(model)
   
 
 oui_loifin <- subset(data, Loifin == "Oui")
-percentage_med <- mean(oui_loifin$Medical == 1) * 100
-percentage_med
+percentage <- mean(oui_loifin$Medical == 1) * 100
+percentage
 
 # 46,7% des gens qui connaissent la loi de fin de vie dans cet échantillon sont 
 # dans le milieu médical !
@@ -613,8 +617,8 @@ print(cramer_coeff)
 # que cette nouvelle variable pour savoir si l'individu est dans le milieu médical
 # ou non est très pertinente. 
 
-model <- glm(Loifin ~ Medical, data = data, family = "binomial")
-summary(model)
+Reg <- glm(Loifin ~ Medical, data = data, family = "binomial")
+summary(Reg)
 
 # Le coefficient est de 1,51 et la p-value est faible alors le résultat est très
 # significatif. Le fait d'être dans le milieu médical augmente grandement les 
@@ -623,8 +627,8 @@ summary(model)
 
 class(data$Niveaumed)
 data$Niveaumed <- relevel(data$Niveaumed, ref = "ASH")
-model <- glm(Loifin ~ Niveaumed, family = binomial, data = data)
-summary(model)
+Reg <- glm(Loifin ~ Niveaumed, family = binomial, data = data)
+summary(Reg)
 
 # Après pluiseurs essais, la catégorie de référence la plus intéressante est 
 # ASH. Les résultats sont très significatifs. Toutes choses égales par ailleurs, 
@@ -636,16 +640,31 @@ summary(model)
 # infirmières, puis les étudiants. 
 
 ###############################################################################
+###############################################################################
+
 
 # Qui connait le nom de la loifin selon age 
 
+reponses <- data %>%
+  filter(!is.na(Nomloi), Nomloi == "1")
 
+pourcentage <- reponses %>%
+  group_by(Age) %>%
+  summarise(Percentage = n() / nrow(reponses) * 100)
+
+print(pourcentage)
 
 # 36,1% ont 18-30, 16,7% ont 31-40, 22,2% ont 41-50, 13,9% ont 51-60, 5,56% ont 
 # 61-70 et 5,54% ont 70+
 
+cramer_coeff <- assocstats(table(data$Nomloi, data$Age))$cramer
+print(cramer_coeff)
+# 0,08 alors pas de corrélation statistique. 
 
-
+Reg <- glm(Nomloi ~ Age, data = data, family = binomial)
+summary(Reg)
+# Aucun résultat n'est significatif. Dans cet échantillon l'âge n'est pas une
+# variable explicative de la connaissance de la loi de fin de vie ou des DA. 
 
 -------------------------------------------------------------------------------
 
@@ -654,11 +673,11 @@ summary(model)
 reponses <- data %>%
   filter(Nomloi == "1")
 
-pourcentage_gender <- reponses %>%
+pourcentage <- reponses %>%
   group_by(Gender) %>%
   summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_gender)
+print(pourcentage)
 
 # 8,3% sont des hommes, 91,7% sont des femmes 
 
