@@ -919,11 +919,8 @@ reponses_correctes <- c("Les volontés des patients exprimées par écrit sur les c
 reponses_sep <- donnees %>%
   mutate(reponses = regmatches(Reponses, gregexpr(paste0("\\b(", paste(reponses_correctes, collapse = "|"), ")\\b"), Reponses)))
 
-# Filtrer les individus qui ont coché exactement les 7 phrases justes
 individus_selectionnes <- donnees_sep %>%
   filter(lengths(reponses) == 7)
-
-# L'objet "individus_selectionnes" contiendra les individus qui ont coché exactement les 7 phrases justes dans la colonne "Reponses".
 
 
 
