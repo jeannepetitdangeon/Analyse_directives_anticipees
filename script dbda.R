@@ -916,12 +916,13 @@ reponses_correctes <- c("Les volontés des patients exprimées par écrit sur les c
                         "Les volontés des patients concernant le refus, la limitation et l'arrêt des traitements et actes médicaux")
 
 
-reponses_sep <- donnees %>%
-  mutate(reponses = regmatches(Reponses, gregexpr(paste0("\\b(", paste(reponses_correctes, collapse = "|"), ")\\b"), Reponses)))
+reponses_sep <- data %>%
+  mutate(reponses = regmatches(Infoda, gregexpr(paste0("\\b(", paste(reponses_correctes, collapse = "|"), ")\\b"), Infoda)))
 
-individus_selectionnes <- donnees_sep %>%
+individus_selectionnes <- reponses_sep %>%
   filter(lengths(reponses) == 7)
 
+# Personne n'a trouvé les 7 bonnes réponses. 
 
 
 
