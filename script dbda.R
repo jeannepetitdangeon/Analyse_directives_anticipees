@@ -829,7 +829,22 @@ print(pourcentage)
   
 # Toutefois, seulement 8,5% de ceux dans le milieu médical connaissaient le nom
 # de la loi. 
-  
+
+cramer_coeff <- assocstats(table(data$Nomloi, data$Medical))$cramer
+print(cramer_coeff)
+# 0,19 alors il semble y avoir une légère corrélation. 
+
+Reg <- glm(Nomloi ~ Medical, data = data, family = binomial)
+summary(Reg)
+# On voit ici que le fait d'être dans le milieu médical a un impact positif sur 
+# la probabilité de connaitre le nom de la loi. Le coefficient est élevé et 
+# statistiquement significatif. (p-value ***)
+
+Reg <- glm(Nomloi ~ Niveaumed , data = data, family = binomial)
+summary(Reg)
+# Ici, pour le nom de la loi, l'échantillon est vraiment petit et est difficilement
+# un bon repère pour les stats, aucun résultat n'est significatif. Toutefois, 
+# on peut voir qu'être médecin semble avoir un impact positif. 
 
 ###############################################################################
 
