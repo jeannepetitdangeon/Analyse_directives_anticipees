@@ -925,13 +925,10 @@ individus_selectionnes <- reponses_sep %>%
 # Personne n'a trouvé les 7 bonnes réponses. 
 
 
-
-
 reponses_fonda <- c("Les volontés des patients exprimées par écrit sur les conditions de leur fin de vie",
                     "Les volontés concernant les méthodes de réanimation",
                     "Les volontés concernant la poursuite des traitements et actes médicaux",
                     "Les volontés des patients concernant le refus")
-
 
 
 
