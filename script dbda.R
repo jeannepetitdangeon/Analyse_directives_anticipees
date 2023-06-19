@@ -601,7 +601,6 @@ summary(Reg)
 -------------------------------------------------------------------------------
   
 # Qui connait loifin selon milieu et niveau médical
-  
 
 oui_loifin <- subset(data, Loifin == "Oui")
 percentage <- mean(oui_loifin$Medical == 1) * 100
@@ -609,6 +608,18 @@ percentage
 
 # 46,7% des gens qui connaissent la loi de fin de vie dans cet échantillon sont 
 # dans le milieu médical !
+
+reponses <- data %>%
+  filter(Medical == "1")
+
+pourcentage <- reponses %>%
+  group_by(Loifin) %>%
+  summarise(Percentage = n() / nrow(reponses) * 100)
+
+print(pourcentage)
+
+# Parmi ceux dans le milieu médical, 80,8% connaissent la loi, 19,2% n'en ont pas 
+# entendu parler. 
 
 cramer_coeff <- assocstats(table(data$Loifin, data$Medical))$cramer
 print(cramer_coeff)
@@ -638,6 +649,7 @@ summary(Reg)
 # les coefficients très élevés. Le coef le plus élevé est celui pour les médecins.
 # Il semblent que ce soient ceux qui ont eu le plus de bonnes réponses, puis les 
 # infirmières, puis les étudiants. 
+
 
 ###############################################################################
 ###############################################################################
@@ -687,7 +699,7 @@ print(cramer_coeff)
 
 Reg <- glm(Nomloi ~ Gender, data = data, family = binomial)
 summary(Reg)
-# Pas de résultat très significatif mais il semble qu'être une face a un impact 
+# Pas de résultat très significatif mais il semble qu'être une femme a un impact 
 # positif sur la probabilité de connaitre la loi. 
 
 -------------------------------------------------------------------------------
@@ -698,11 +710,11 @@ summary(Reg)
 reponses <- data %>%
   filter(Nomloi == "1")
 
-pourcentage_city <- reponses %>%
+pourcentage <- reponses %>%
   group_by(City) %>%
   summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_city)
+print(pourcentage)
 
 # 38,8% de village, 30,6 d'une petite ville et 30,6% d'une grande ville. 
 
@@ -722,11 +734,11 @@ summary(Reg)
 reponses <- data %>%
   filter(Nomloi == "1")
 
-pourcentage_csp <- reponses %>%
+pourcentage <- reponses %>%
   group_by(CSP) %>%
   summarise(Percentage = n() / nrow(reponses) * 100)
 
-print(pourcentage_csp)
+print(pourcentage)
 
 
 # 38,9%  prof inter, 36,1% Cadre, 16,7% employé, 2,74% ouvriers, 5,56% sans acti
@@ -738,25 +750,85 @@ print(cramer_coeff)
 
 Reg <- glm(Nomloi ~ CSP, data = data, family = binomial)
 summary(Reg)
-# Pas de résultat significatif. 
+# Pas de résultat significatif pour la connaissance du nom de la loi.  
 
 -------------------------------------------------------------------------------
 
 # Qui connait le nom de la loifin selon maladie chronique 
 
+reponses <- data %>%
+  filter(Nomloi == "1")
+
+pourcentage <- reponses %>%
+  group_by(Malchro) %>%
+  summarise(Percentage = n() / nrow(reponses) * 100)
+
+print(pourcentage)
+
+# 16,7% de ceux qui connaissent la loi ont une maladie chronique. 
+
+cramer_coeff <- assocstats(table(data$Nomloi, data$Malchro))$cramer
+print(cramer_coeff)
+# 0,04 donc pas de corrélation. 
+
+Reg <- glm(Nomloi ~ Malchro, data = data, family = binomial)
+summary(Reg)
+# Aucun résultat significatif. 
+
 
 
 # Qui connait le nom de la loifin selon type maladie chronique
 
-  
+reponses <- data %>%
+  filter(!is.na(Nomloi), Nomloi == "1", !is.na(Malchro), Malchro == "1")
+
+pourcentage <- reponses %>%
+  group_by(Typemalchro) %>%
+  summarise(Percentage = n() / nrow(reponses) * 100)
+
+print(pourcentage)
+
+# Parmi ceux qui connaissent le nom de la loi et qui ont une maladie chronique, 
+# 16,7% ont un cancer et 16,7% ont une maladie cardiovasc, 50% sont dans "Autre".
+# Ainsi, les plus représentés ici sont cancer et cardiovasc. 
+
+cramer_coeff <- assocstats(table(data$Nomloi, data$Typemalchro))$cramer
+print(cramer_coeff)
+# 0,16 mais peu intéressant ici vu que l'échantillon est de très petite taille. 
+
+Reg <- glm(Nomloi ~ Typemalchro, data = data, family = binomial)
+summary(Reg)
+# Aucun résultat significatif ici, on distingue toutefois que le fait d'avoir un
+# cancer ou une maladie cardiovasculaire a un effet positif sur le fait de connaitre
+# le nom de la loi. Ce résultat n'est pas statistiquement significatif. 
+
+
 -------------------------------------------------------------------------------
 
 # Qui connait le nom de la loi fin selon milieu médical et niveau d'expertise
   
+reponses <- data %>%
+  filter(Nomloi == "1")
 
+pourcentage <- reponses %>%
+  group_by(Medical) %>%
+  summarise(Percentage = n() / nrow(reponses) * 100)
+
+print(pourcentage)
+
+# Parmi ceux qui connaissent le nom de la loi, 86,1% sont dans le milieu médical. 
+
+reponses <- data %>%
+  filter(Medical == "1")
+
+pourcentage <- reponses %>%
+  group_by(Nomloi) %>%
+  summarise(Percentage = n() / nrow(reponses) * 100)
+
+print(pourcentage)
   
-  
-  
+# Toutefois, seulement 8,5% de ceux dans le milieu médical connaissaient le nom
+# de la loi. 
   
 
 ###############################################################################
