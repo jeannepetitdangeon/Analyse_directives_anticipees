@@ -873,3 +873,171 @@ summary(Reg)
 
 
 # Qui connait DA selon milieu et niveau d'expertise médical
+
+
+
+
+###############################################################################
+###############################################################################
+###############################################################################
+
+#                       Stat sur ceux qui ont juste aux 
+#                           questions sur les DA.
+
+
+# Fonction utilisée dans les questions suivantes 
+
+reponses <- strsplit(data$Infoda, ",")
+reponses_distinctes <- unique(unlist(reponses))
+print(reponses_distinctes)
+
+databis <- data %>%
+  separate_rows(Infoda, sep = ",")
+
+-------------------------------------------------------------------------------
+  
+# Question 10
+
+# Les volontés des patients exprimées par écrit ***
+# Les volontées des patients exprimées à l'oral 
+# Les options possibles en fin de vie incluant la sédation
+# Les volontés des patients sur les conditions d'hydratation
+# Les volontés concernant les méthodes de réanimation ***
+# Les volontés concernant la poursuite des traitements ***
+# Les volontés des patients concernant le refus, la limitation et l'arrêt des traitements ***
+
+
+reponses_correctes <- c("Les volontés des patients exprimées par écrit sur les conditions de leur fin de vie", 
+                        "Les volontés des patients exprimées à l'oral sur les conditions de leur fin de vie, en présence de 2 témoins dont la personne de confiance", 
+                        "Les options possibles en fin de vie incluant la sédation",
+                        "Les volontés des patients sur les conditions d'hydratation et de nutrition artificielles",
+                        "Les volontés concernant les méthodes de réanimation (massage cardiaque, intubation...)",
+                        "Les volontés concernant la poursuite des traitements et actes médicaux",
+                        "Les volontés des patients concernant le refus, la limitation et l'arrêt des traitements et actes médicaux")
+
+
+reponses_sep <- donnees %>%
+  mutate(reponses = regmatches(Reponses, gregexpr(paste0("\\b(", paste(reponses_correctes, collapse = "|"), ")\\b"), Reponses)))
+
+# Filtrer les individus qui ont coché exactement les 7 phrases justes
+individus_selectionnes <- donnees_sep %>%
+  filter(lengths(reponses) == 7)
+
+# L'objet "individus_selectionnes" contiendra les individus qui ont coché exactement les 7 phrases justes dans la colonne "Reponses".
+
+
+
+
+
+reponses_fonda <- c("Les volontés des patients exprimées par écrit sur les conditions de leur fin de vie",
+                    "Les volontés concernant les méthodes de réanimation",
+                    "Les volontés concernant la poursuite des traitements et actes médicaux",
+                    "Les volontés des patients concernant le refus")
+
+
+
+
+-------------------------------------------------------------------------------
+
+# Question 11
+
+# Les personnes en fin de vie
+# Les personnes ayant une maladie grave et incurable
+# Toutes les personnes majeures
+# Les personnes sous tutelle 
+# Les personnes ayant des troubles cognitifs
+# Les personnes âgées de plus de 60 ans. 
+# ERREUR FONDAMENTALE : Les majeurs et les mineurs 
+
+-------------------------------------------------------------------------------
+
+# Question 12
+
+# Modèle type
+# Sur papier libre 
+
+question12 <- data %>%
+  filter(Redacda == "En utilisant un modèle type proposé, Sur papier libre, daté et signé, authentifié")   
+
+# 168 ont eu juste à cette question
+table(data$Redacda)
+
+-------------------------------------------------------------------------------
+  
+# Question 14
+
+# Dans le dossier médical
+# Dans le dossier chez votre médecin traitant 
+# les donner à votre personne de confiance
+# les garder chez vous
+# ERREUR FONDAMENTALE : registre national
+# ERREUR FONDA : notaire
+# ERREUR FONDA : sur un fichier à partir de ma carte vitale
+
+-------------------------------------------------------------------------------
+
+# Question 15 
+
+# Absence de durée de validité ***
+  
+question15 <- data %>%
+  filter(Valida == "Absence de durée de validité")
+
+# 432 personnes ont eu juste à la question 15
+
+-------------------------------------------------------------------------------
+
+# Question 16
+
+# Oui ***
+
+question16 <- data %>%
+  filter(Modifda == "Oui")
+
+# 561 personnes ont eu juste à cette question
+
+-------------------------------------------------------------------------------
+
+# Question 18 
+
+# Le jour où je ne pourrai plus communiquer après un accident grave 
+# Le jour où je ne pourrai plus communiquer à l'occasion d'une maladie grave
+# Uniquement dans les situations de fin de vie ***
+# ERREUR : n'importe quel moment 
+
+-------------------------------------------------------------------------------
+
+# Question 19 
+
+# Oui ***
+
+question19 <- data %>%
+  filter(Urgencepasda == "Oui")
+
+# 370 ont eu juste à cette question
+
+
+-------------------------------------------------------------------------------
+
+# Question 20 
+
+# Oui 
+
+question20 <- data %>%
+  filter(Pasda == "Oui")
+
+# 199 personnes ont juste à cette question
+
+-------------------------------------------------------------------------------
+
+# Question 21 
+
+# Des directives anticipées ***
+# ERREUR : l'avis des proches
+
+table(data$Applica1)
+
+question21 <- data %>%
+  filter(Applica1 == "Des directives anticipées")
+
+# 427 personnes ont eu juste à cette question
