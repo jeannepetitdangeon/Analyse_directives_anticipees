@@ -60,7 +60,6 @@ data$Age <- databis$age_category
 datanona <- data.frame(data)
 datanona <- data[!is.na(data$Age), ]
 data <- datanona
-
 # 5 observations en moins
 
 rm(datanona)
@@ -919,7 +918,7 @@ reponses_correctes <- c("Les volontés des patients exprimées par écrit sur les c
 reponses_sep <- data %>%
   mutate(reponses = regmatches(Infoda, gregexpr(paste0("\\b(", paste(reponses_correctes, collapse = "|"), ")\\b"), Infoda)))
 
-individus_selectionnes <- reponses_sep %>%
+question10 <- reponses_sep %>%
   filter(lengths(reponses) == 7)
 
 # Personne n'a trouvé les 7 bonnes réponses. 
@@ -930,6 +929,15 @@ reponses_fonda <- c("Les volontés des patients exprimées par écrit sur les condi
                     "Les volontés concernant la poursuite des traitements et actes médicaux",
                     "Les volontés des patients concernant le refus")
 
+reponses_sep <- data %>%
+  mutate(reponses = regmatches(Infoda, gregexpr(paste0("\\b(", paste(reponses_fonda, collapse = "|"), ")\\b"), Infoda)))
+
+question10_fonda <- reponses_sep %>%
+  filter(lengths(reponses) >= 4)
+
+table(question10_fonda$Infoda)
+
+# 252 personnes ont eu les 4 réponses fondamentales 
 
 
 -------------------------------------------------------------------------------
@@ -938,12 +946,18 @@ reponses_fonda <- c("Les volontés des patients exprimées par écrit sur les condi
 
 # Les personnes en fin de vie
 # Les personnes ayant une maladie grave et incurable
-# Toutes les personnes majeures
+# Toutes les personnes majeures ***
 # Les personnes sous tutelle 
 # Les personnes ayant des troubles cognitifs
 # Les personnes âgées de plus de 60 ans. 
 # ERREUR FONDAMENTALE : Les majeurs et les mineurs 
 
+
+data11 <- data.frame(data$Concernda)
+individus_tries <- subset(donnees, !Concernda == "Les majeurs et les mineurs")
+print(individus_tries)
+
+table(data$Concernda)
 -------------------------------------------------------------------------------
 
 # Question 12
