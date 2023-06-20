@@ -1,4 +1,4 @@
-                  ## Analyse de données Loi de fin de vie 
+##                  ANALYSE DE DONNEES LOI DE FIN DE VIE
 
 
 # Nettoyage
@@ -24,12 +24,12 @@ View(data)
 
 
 
-                # Modification variables pour analyse #
+#                  MODIFICATION DES VARIABLES POUR ANALYSE
 
 
 
-# Suppression de variables non comprises dans les régressions faite à la main, 
-# Simplification du nom des colonnes faite à la main. 
+# Suppression de variables non comprises dans les régressions faite à la main, A REFAIRE EN CODE
+# Simplification du nom des colonnes faite à la main. !!!!! A REFAIRE 
 
 print(colnames(data))
 
@@ -884,7 +884,7 @@ summary(Reg)
 #                           questions sur les DA.
 
 
-# Fonction utilisée dans les questions suivantes 
+# Fonction utilisées dans les questions suivantes 
 
 reponses <- strsplit(data$Infoda, ",")
 reponses_distinctes <- unique(unlist(reponses))
@@ -898,7 +898,7 @@ databis <- data %>%
 # Question 10
 
 # Les volontés des patients exprimées par écrit ***
-# Les volontées des patients exprimées à l'oral 
+# Les volontés des patients exprimées à l'oral 
 # Les options possibles en fin de vie incluant la sédation
 # Les volontés des patients sur les conditions d'hydratation
 # Les volontés concernant les méthodes de réanimation ***
@@ -913,7 +913,6 @@ reponses_correctes <- c("Les volontés des patients exprimées par écrit sur les c
                         "Les volontés concernant les méthodes de réanimation (massage cardiaque, intubation...)",
                         "Les volontés concernant la poursuite des traitements et actes médicaux",
                         "Les volontés des patients concernant le refus, la limitation et l'arrêt des traitements et actes médicaux")
-
 
 reponses_sep <- data %>%
   mutate(reponses = regmatches(Infoda, gregexpr(paste0("\\b(", paste(reponses_correctes, collapse = "|"), ")\\b"), Infoda)))
@@ -937,7 +936,7 @@ question10_fonda <- reponses_sep %>%
 
 table(question10_fonda$Infoda)
 
-# 252 personnes ont eu les 4 réponses fondamentales 
+# 252 personnes ont eu les 4 réponses fondamentales parmi leurs réponses.  
 
 
 -------------------------------------------------------------------------------
@@ -952,12 +951,14 @@ table(question10_fonda$Infoda)
 # Les personnes âgées de plus de 60 ans. 
 # ERREUR FONDAMENTALE : Les majeurs et les mineurs 
 
+reponses_fonda <- c("Toutes les personnes majeures")
 
-data11 <- data.frame(data$Concernda)
-individus_tries <- subset(donnees, !Concernda == "Les majeurs et les mineurs")
-print(individus_tries)
+reponses_sep <- data %>%
+  mutate(reponses = regmatches(Concernda, gregexpr(paste0("\\b(", paste(reponses_fonda, collapse = "|"), ")\\b"), Concernda)))
 
-table(data$Concernda)
+question11_fonda <- reponses_sep %>%
+  filter(lengths(reponses) >= 1)
+
 -------------------------------------------------------------------------------
 
 # Question 12
@@ -1050,3 +1051,28 @@ question21 <- data %>%
   filter(Applica1 == "Des directives anticipées")
 
 # 427 personnes ont eu juste à cette question
+
+
+
+###############################################################################
+###############################################################################
+###############################################################################
+
+#                        PARTIE SUR LE MEDECIN TRAITANT
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
