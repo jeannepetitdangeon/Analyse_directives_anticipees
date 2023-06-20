@@ -29,7 +29,11 @@ View(data)
 
 
 # Suppression de variables non comprises dans les régressions faite à la main, A REFAIRE EN CODE
+
+# Pasdabis a supp, ..... 
+
 # Simplification du nom des colonnes faite à la main. !!!!! A REFAIRE 
+
 
 print(colnames(data))
 
@@ -246,7 +250,6 @@ rm(reponses_sep)
 # Autre médecin = 91, Solo = 104, Média = 268
 
 
-
 -------------------------------------------------------------------------------
 
 # Stat sur ce que représentent les directives anticipées 
@@ -313,6 +316,31 @@ print(top_reponses)
 # est un soulagement (retrouvé dans 11,7% des réponses) et chez les hommes c'est 
 # Une responsabilité (dans 11,1% des réponses). 
 
+donnees <- donnees %>%
+  separate_rows(Rpzda, sep = ",\\s*") %>%
+  filter(!is.na(Rpzda))  
+
+donnees$Rpzda <- trimws(donnees$Rpzda)
+
+resultats <- donnees %>%
+  group_by(Medical, Rpzda) %>%
+  summarise(Count = n()) %>%
+  group_by(Medical) %>%
+  mutate(Percentage = (Count / sum(Count)) * 100) %>%
+  arrange(desc(Count))
+
+top_reponses <- resultats %>%
+  group_by(Medical) %>%
+  slice(1:5) %>%
+  ungroup()
+
+top_reponses$Medical <- ifelse(top_reponses$Medical == 1, "Oui", "Non")
+
+print(top_reponses)
+
+# Mêmes réponses pour ceux qui sont dans le milieu médical ou non. 
+# Un choix, le respect et là on a la liberté et une anticipation qui s'inversent 
+# chez l'un et chez l'autre puis un soulagement. Rien de vraiment analysable. 
 
 table(donnees$Rpzda)
 
@@ -320,6 +348,12 @@ table(donnees$Rpzda)
 # 110 la sécurité, 241 un soulagement, 183 une responsabilité, 46 une angoisse
 
 rm(donnees)
+rm(comptage_mal)
+rm(comptage_med)
+rm(resultats)
+rm(top_reponses)
+rm(reponses)
+
 
 -------------------------------------------------------------------------------
 
@@ -356,7 +390,27 @@ print(comptage_age)
 # Parmi ceux qui ont rédigé leurs DA, 16 sont 18-30, 17 sont 31-40, 7 sont 41-50,
 # 19 sont 51-60, 9 sont 61-70 et 9 sont 70+
 
+reponses <- data %>%
+  filter(!is.na(Vousda), Vousda == "Oui")
 
+comptage_med <- reponses %>%
+  group_by(Medical) %>%
+  summarise(Count = n())
+
+print(comptage_med)
+
+# 40 sont dans le médical, 37 ne le sont pas. 
+
+reponses <- data %>%
+  filter(!is.na(Vousda), Vousda == "Oui")
+
+comptage_mal <- reponses %>%
+  group_by(Malchro) %>%
+  summarise(Count = n())
+
+print(comptage_mal)
+
+# 26 ont une maladie chronique et 51 n'en ont pas. 
 
 -------------------------------------------------------------------------------
 
@@ -1061,18 +1115,183 @@ question21 <- data %>%
 #                        PARTIE SUR LE MEDECIN TRAITANT
 
 
+# Retour sur l'échantillon total
+
+# Infos en plus ? 
+
+table(data$Plusinfoda)
+# 150 n'auraient pas aimé être plus informés, 871 oui. 
+
+-------------------------------------------------------------------------------
+
+# Explications en plus sur les termes médicaux ? 
+
+table(data$Plusexplida)
+# 231 ne veulent pas d'explications sur les termes médicaux en plus, 804 oui.
 
 
+-------------------------------------------------------------------------------
+
+# Par quels moyens ? 
+  
+reponses_sep <- strsplit(data$Mediuminfo, ",\\s*")
+comptes <- table(unlist(reponses_sep))
+print(comptes)
+
+# 628 veulent une affiche chez le médecin traitant, 561 pour les brochures et dépliants,
+# 235 dans des magazines, 590 avec un professionel de santé.426 dans reportages et doc.
+# 225 dans des spots publicitaires. 
+
+-------------------------------------------------------------------------------
+  
+# Par quel professionel de santé ? 
+  
+table(data$Proinfo)
 
 
+library(stringdist)
 
 
+donnees <- data.frame(data$Proinfo)
+
+donnees$Proinfo <- tolower(donnees$data.Proinfo)
+donnees$Proinfo <- gsub("[[:punct:]]", "", donnees$Proinfo)
+donnees$Proinfo <- gsub("\\s+", " ", donnees$Proinfo)
 
 
+compteur <- 0
+
+for (i in 1:nrow(donnees)) {
+  if (!is.na(donnees$Proinfo[i])) {
+    mots <- strsplit(donnees$Proinfo[i], " ")[[1]]
+    
+    for (mot in mots) {
+      if (!is.na(mot)) {
+        distance <- stringdist::stringdist("médecin", mot, method = "lv")
+        if (distance <= 2) {  
+          compteur <- compteur + 1
+          break 
+        }
+      }
+    }
+  }
+}
+
+cat("Nombre de lignes contenant le mot 'médecin':", compteur, "\n")
+
+# 816 ont répondu médecin
+
+compteur <- 0
+
+for (i in 1:nrow(donnees)) {
+  if (!is.na(donnees$Proinfo[i])) {
+    mots <- strsplit(donnees$Proinfo[i], " ")[[1]]
+    
+    for (mot in mots) {
+      if (!is.na(mot)) {
+        distance <- stringdist::stringdist("infirmière", mot, method = "lv")
+        if (distance <= 2) {  
+          compteur <- compteur + 1
+          break 
+        }
+      }
+    }
+  }
+}
+
+cat("Nombre de lignes contenant le mot 'infirmière':", compteur, "\n")
+
+# 21 ont répondu infirmière
+
+compteur <- 0
+
+for (i in 1:nrow(donnees)) {
+  if (!is.na(donnees$Proinfo[i])) {
+    mots <- strsplit(donnees$Proinfo[i], " ")[[1]]
+    
+    for (mot in mots) {
+      if (!is.na(mot)) {
+        distance <- stringdist::stringdist("psy", mot, method = "lv")
+        if (distance <= 3) {  
+          compteur <- compteur + 1
+          break 
+        }
+      }
+    }
+  }
+}
+
+cat("Nombre de lignes contenant le mot 'psy':", compteur, "\n")
+
+# 260 à peu près ont dit psy 
+
+------------------------------------------------------------------------------
+
+# Médecin traitant doit être cet interlocuteur ? 
+  
+
+table(data$infomedecin)  
+# 42 pensent que non, 997 pensent que oui. 
 
 
+-------------------------------------------------------------------------------
+  
+# Rôle du médecin traitant ?
+  
+reponses_sep <- strsplit(data$Rolemedecin, ",\\s*")
+comptes <- table(unlist(reponses_sep))
+print(comptes)
 
+# 949 ont dit informateur, 17 ont dit qu'il n'a aucun rôle à ce sujet, 259 ont 
+# dit qu'il doit être porte parole des dernières volontés, 585 ont dit consultant,
+# 429 ont dit conservateur de vos directives anticipées. 
 
+-------------------------------------------------------------------------------
 
+# Moment pour aborder le sujet ?
 
+reponses_sep <- strsplit(data$Tinfoda, ",\\s*")
+comptes <- table(unlist(reponses_sep))
+print(comptes)
+  
+# 470 ont dit à l'annonce d'une maladie grave, 363 ont dit de manière systématique,
+# 256 ont dit lors d'une consult de suivi relative à une maladie chronique, 122 lors
+# d'une consult pour un tout autre motif, 513 quand je me sens prêt psychiquement. 
 
+-------------------------------------------------------------------------------
+  
+# Aide pour rédiger du médecin traitant ?
+  
+table(data$Helpda)
+
+# 394 ont dit non, 636 ont dit oui. 
+
+-------------------------------------------------------------------------------
+  
+# Médecin aborde le sujet ?
+  
+table(data$Medecinaborde)
+
+# 263 ont dit non, 756 ont dit oui. 
+
+-------------------------------------------------------------------------------
+  
+# Médecin attend que le patient en parle ? 
+  
+table(data$Medecinattend)
+
+# 678 ont dit non, 343 ont dit oui. 
+
+-------------------------------------------------------------------------------
+
+# qu'attendez vous d'une telle consultation avec le médecin traitant ? 
+  
+reponses_sep <- strsplit(data$Expectconsult, ",\\s*")
+comptes <- table(unlist(reponses_sep))
+print(comptes)
+
+# 445 ont dit d'autres infos utiles, 623 sur les modalités d'écriture, 597 sur 
+# les modalités de conservation, 516 infos sur les termes médicaux, 13 ne souhaitent 
+# pas en parler avec le médecin traitant, 589 un rappel du cadre légal, 555 un temps
+# d'écoute, 768 une définition claire et précise. 
+  
