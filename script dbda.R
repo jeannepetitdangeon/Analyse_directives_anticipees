@@ -19,7 +19,7 @@ library(stats)
 
 # Importation des données
 
-data <- read_excel("C:/Users/epcmic/OneDrive/Bureau/GitHub/Analyse_directives_anticipees/data.xlsx")
+data <- read_excel("C:/Users/epcmic/OneDrive/Bureau/GitHub/Analyse_directives_anticipees/db.xlsx")
 View(data)
 
 
@@ -27,15 +27,15 @@ View(data)
 #                  MODIFICATION DES VARIABLES POUR ANALYSE
 
 
-
-# Suppression de variables non comprises dans les régressions faite à la main, A REFAIRE EN CODE
-
-# Pasdabis a supp, ..... 
-
-# Simplification du nom des colonnes faite à la main. !!!!! A REFAIRE 
-
+# Suppression de variables non comprises dans les régressions
 
 print(colnames(data))
+data <- data[, -c(1, 3, 7, 17, 18, 19, 20, 26, 27, 34, 35, 50)]
+
+# Simplification du nom des colonnes
+
+print(colnames(data))
+
 
 -------------------------------------------------------------------------------
 
@@ -436,6 +436,7 @@ print(comptes)
 ###############################################################################
 ###############################################################################
 
+#                       STATS, CORRELATIONS ET REGRESSIONS
 
 
 
@@ -905,27 +906,59 @@ summary(Reg)
 # Qui connait DA selon age 
 
 
-
+-------------------------------------------------------------------------------
 
 # Qui connait DA selon genre
 
 
-
+-------------------------------------------------------------------------------
 
 # Qui connait DA selon ville 
 
-
+-------------------------------------------------------------------------------
 
 # Qui connait DA selon CSP
 
 
-
+-------------------------------------------------------------------------------
 
 # Qui connait DA selon maladie chronique 
 
-
+-------------------------------------------------------------------------------
 
 # Qui connait DA selon milieu et niveau d'expertise médical
+
+###############################################################################
+
+
+# Qui a rédigé DA selon age 
+
+
+-------------------------------------------------------------------------------
+
+# Qui a rédigé DA selon genre
+
+
+-------------------------------------------------------------------------------
+
+# Qui a rédigé DA selon ville 
+
+-------------------------------------------------------------------------------
+
+# Qui a rédigé DA selon CSP
+
+
+-------------------------------------------------------------------------------
+
+# Qui a rédigé DA selon maladie chronique 
+
+
+
+-------------------------------------------------------------------------------
+
+
+# Qui a rédigé DA selon milieu et niveau d'expertise médical
+
 
 
 
@@ -974,6 +1007,8 @@ reponses_sep <- data %>%
 question10 <- reponses_sep %>%
   filter(lengths(reponses) == 7)
 
+
+
 # Personne n'a trouvé les 7 bonnes réponses. 
 
 
@@ -985,10 +1020,10 @@ reponses_fonda <- c("Les volontés des patients exprimées par écrit sur les condi
 reponses_sep <- data %>%
   mutate(reponses = regmatches(Infoda, gregexpr(paste0("\\b(", paste(reponses_fonda, collapse = "|"), ")\\b"), Infoda)))
 
-question10_fonda <- reponses_sep %>%
+question10 <- reponses_sep %>%
   filter(lengths(reponses) >= 4)
 
-table(question10_fonda$Infoda)
+table(question10$Infoda)
 
 # 252 personnes ont eu les 4 réponses fondamentales parmi leurs réponses.  
 
@@ -1005,13 +1040,17 @@ table(question10_fonda$Infoda)
 # Les personnes âgées de plus de 60 ans. 
 # ERREUR FONDAMENTALE : Les majeurs et les mineurs 
 
-reponses_fonda <- c("Toutes les personnes majeures")
+filtre11 <- !grepl("Les majeurs et les mineurs", data$Concernda) & !is.na(data$Concernda)
+question11 <- na.omit(data.frame(data$Concernda[filtre11]))
+table(question11)
 
-reponses_sep <- data %>%
-  mutate(reponses = regmatches(Concernda, gregexpr(paste0("\\b(", paste(reponses_fonda, collapse = "|"), ")\\b"), Concernda)))
+# 556 n'ont pas fait l'erreur fondamentale
 
-question11_fonda <- reponses_sep %>%
-  filter(lengths(reponses) >= 1)
+question11 <- data.frame(question11$data.Concernda.filtre11.[grepl("Toutes les personnes majeures", 
+                                                        question11$data.Concernda.filtre11.)])
+
+
+# 413 n'ont pas fait l'erreur fondamentale et ont eu la réponse à ne pas oublier. 
 
 -------------------------------------------------------------------------------
 
@@ -1068,6 +1107,8 @@ question16 <- data %>%
 # Le jour où je ne pourrai plus communiquer à l'occasion d'une maladie grave
 # Uniquement dans les situations de fin de vie ***
 # ERREUR : n'importe quel moment 
+
+  
 
 -------------------------------------------------------------------------------
 
