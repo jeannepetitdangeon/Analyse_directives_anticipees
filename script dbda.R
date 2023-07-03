@@ -1984,6 +1984,46 @@ common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv,
 
 merged_data <- subset(data, Indiv %in% common_individuals)
 
+percentages <- prop.table(table(merged_data$Age)) * 100
+print(percentages)
+
+18-30      31-40      41-50      51-60      61-70 70 et plus 
+25.925926  25.925926  14.814815  16.666667  12.962963   3.703704 
+
+percentages <- prop.table(table(merged_data$Gender)) * 100
+print(percentages)
+
+0        1 
+27.77778 72.22222
+
+percentages <- prop.table(table(merged_data$CSP)) * 100
+print(percentages)
+
+Artisan  Cadre sup    Employé    Ouvrier Prof inter  Sans acti 
+9.259259  22.222222  29.629630   5.555556  27.777778   5.555556 
+
+percentages <- prop.table(table(merged_data$Medical)) * 100
+print(percentages)
+
+0        1 
+66.66667 33.33333 
+
+percentages <- prop.table(table(merged_data$Niveaumed)) * 100
+print(percentages)
+
+ASH     Autre  Etudiant       IDE   Médecin 
+16.666667 27.777778 11.111111 38.888889  5.555556 
+
+percentages <- prop.table(table(merged_data$Malchro)) * 100
+print(percentages)
+
+Non      Oui 
+85.18519 14.81481 
+
+# Pas assez d'indiv dans le sous échantillon, aucun coef de Cramer intéressant, 
+# Aucune régression significative. 
+
+
 
 ###############################################################################
 ###############################################################################
@@ -2171,4 +2211,5 @@ print(comptes)
 # les modalités de conservation, 516 infos sur les termes médicaux, 13 ne souhaitent 
 # pas en parler avec le médecin traitant, 589 un rappel du cadre légal, 555 un temps
 # d'écoute, 768 une définition claire et précise. 
-  
+
+
