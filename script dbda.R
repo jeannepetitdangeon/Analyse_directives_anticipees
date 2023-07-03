@@ -911,7 +911,6 @@ summary(Reg)
 
 -------------------------------------------------------------------------------
 
-
 # Qui connait le nom de la loifin selon ville 
 
 reponses <- data %>%
@@ -1105,7 +1104,7 @@ Age        Percentage
 cramer_coeff <- assocstats(table(data$Diranti, data$Age))$cramer
 print(cramer_coeff)
 
-# Pas de co
+# Pas de corrélation
 
 Reg <- glm(Diranti ~ Age , data = data, family = binomial)
 summary(Reg)
@@ -1135,6 +1134,8 @@ Residual deviance: 1440.6  on 1054  degrees of freedom
 AIC: 1452.6
 
 Number of Fisher Scoring iterations: 4
+
+
 -------------------------------------------------------------------------------
 
 # Qui connait DA selon genre
