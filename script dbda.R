@@ -1,7 +1,7 @@
 ##                  ANALYSE DE DONNEES LOI DE FIN DE VIE
 
 
-# Nettoyage
+# Nettoyage du workspace
 
 rm(list=ls())
 
@@ -68,7 +68,7 @@ databis$age_category <- cut(data$Age, breaks = intervals, labels = labels,
 data$Age <- databis$age_category
 
 
-# Tri des NA en âge (trop jeunes, erreur, non mentionné)
+# Tri des NA en âge (trop jeune, erreur, non mentionné)
 
 datanona <- data.frame(data)
 datanona <- data[!is.na(data$Age), ]
@@ -131,7 +131,6 @@ ggplot(csp_counts_df, aes(x = "", y = Count, fill = CSP)) +
   ggtitle("Répartition des CSP") +
   scale_fill_brewer(palette = "Set3")
 
-
 -------------------------------------------------------------------------------
 
 # Stat milieu médical ou non 
@@ -165,7 +164,7 @@ ggplot(niveau_counts_df, aes(x = "", y = Count, fill = Niveaumed)) +
 # Maladies chroniques 
 
 table(data$Malchro)
-# 803 personnes sans maladie chronique, 257 avec 
+# 803 personnes sans maladie chronique, 257 avec
 
 
 -------------------------------------------------------------------------------
@@ -356,8 +355,7 @@ print(top_reponses)
 # Mêmes réponses pour ceux qui sont dans le milieu médical ou non. 
 # Un choix, le respect et là on a la liberté et une anticipation qui s'inversent 
 # chez l'un et chez l'autre puis un soulagement. Rien de vraiment analysable. 
-# A mieux expliquer mais c'est pour dire qu'ils choisissent les mêmes mots dans le 
-# même ordre. 
+ 
 
 table(donnees$Rpzda)
 
@@ -856,7 +854,7 @@ Number of Fisher Scoring iterations: 6
 # statistiquement significative les chances de connaitre la loi de fin de vie,
 # par rapport à un agent de service hospitalier. Les p-value sont très faibles et 
 # les coefficients très élevés. Le coef le plus élevé est celui pour les médecins.
-# Il semblent que ce soient ceux qui ont eu le plus de bonnes réponses, puis les 
+# Il semble que ce soient ceux qui ont eu le plus de bonnes réponses, puis les 
 # infirmières, puis les étudiants. 
 
 
