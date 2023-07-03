@@ -1200,7 +1200,7 @@ print(pourcentage)
 
 City             Percentage
 <fct>                 <dbl>
-  1 Un village             48.7
+1 Un village             48.7
 2 Une grande ville       23.3
 3 Une petite ville       28.1
 
@@ -1505,7 +1505,6 @@ Number of Fisher Scoring iterations: 4
 
 # Pas intéressant car même si plus de femmes, plus de femmes dans l'échantillon
 
-
 -------------------------------------------------------------------------------
 
 # Qui a rédigé DA selon ville 
@@ -1556,7 +1555,7 @@ AIC: 463.71
 
 Number of Fisher Scoring iterations: 4
 
-# Pas intéressant 
+# Pas interprétable
 
 -------------------------------------------------------------------------------
 
