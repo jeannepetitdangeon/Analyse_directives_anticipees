@@ -1796,7 +1796,7 @@ table(question10$Infoda)
 
 # 252 personnes ont eu les 4 réponses fondamentales parmi leurs réponses.  
 
-
+rm(reponses_sep)
 -------------------------------------------------------------------------------
 
 # Question 11
@@ -1809,17 +1809,18 @@ table(question10$Infoda)
 # Les personnes âgées de plus de 60 ans. 
 # ERREUR FONDAMENTALE : Les majeurs et les mineurs 
 
-filtre11 <- !grepl("Les majeurs et les mineurs", data$Concernda) & !is.na(data$Concernda)
-question11 <- na.omit(data.frame(data$Concernda[filtre11]))
-table(question11)
 
-# 556 n'ont pas fait l'erreur fondamentale
 
-question11 <- data.frame(question11$data.Concernda.filtre11.[grepl("Toutes les personnes majeures", 
-                                                        question11$data.Concernda.filtre11.)])
+filtre11 <- !grepl("Les majeurs et les mineurs", data$Concernda) & 
+  !is.na(data$Concernda) & grepl("Toutes les personnes majeures", data$Concernda)
+question11 <- data[filtre11, ]
 
+table(question11$Concernda)
 
 # 413 n'ont pas fait l'erreur fondamentale et ont eu la réponse à ne pas oublier. 
+
+rm(filtre11)
+
 
 -------------------------------------------------------------------------------
 
@@ -1831,8 +1832,8 @@ question11 <- data.frame(question11$data.Concernda.filtre11.[grepl("Toutes les p
 question12 <- data %>%
   filter(Redacda == "En utilisant un modèle type proposé, Sur papier libre, daté et signé, authentifié")   
 
-# 168 ont eu juste à cette question
-table(data$Redacda)
+# 167 ont eu juste à cette question
+table(question12$Redacda)
 
 -------------------------------------------------------------------------------
   
@@ -1846,10 +1847,16 @@ table(data$Redacda)
 # ERREUR FONDA : notaire
 # ERREUR FONDA : sur un fichier à partir de ma carte vitale
 
+table(data$Conservda)
 
-filtre14 <- !grepl("Les majeurs et les mineurs", data$Concernda) & !is.na(data$Concernda)
-question14 <- na.omit(data.frame(data$Concernda[filtre11]))
-table(question11)
+filtre14 <- !grepl("registre national", data$Conservda) & !is.na(data$Conservda) & !grepl("notaire", data$Conservda) & !grepl("carte vitale", data$Conservda)
+question14 <- data[filtre14, ]
+
+table(question14$Conservda)
+
+# 446 personnes n'ont pas fait les erreurs fondamentales 
+
+rm(filtre14)
 
 -------------------------------------------------------------------------------
 
@@ -1860,7 +1867,7 @@ table(question11)
 question15 <- data %>%
   filter(Valida == "Absence de durée de validité")
 
-# 432 personnes ont eu juste à la question 15
+# 433 personnes ont eu juste à la question 15
 
 -------------------------------------------------------------------------------
 
@@ -1871,7 +1878,7 @@ question15 <- data %>%
 question16 <- data %>%
   filter(Modifda == "Oui")
 
-# 561 personnes ont eu juste à cette question
+# 560 personnes ont eu juste à cette question
 
 -------------------------------------------------------------------------------
 
@@ -1882,8 +1889,20 @@ question16 <- data %>%
 # Uniquement dans les situations de fin de vie ***
 # ERREUR : n'importe quel moment 
 
-  
+table(data$Tapplicda)
 
+filtre18 <- !grepl("A n'importe quel moment de mon parcours médical, peu importe mon état de conscience", 
+                   data$Tapplicda) & !grepl("À n'importe quel moment de mon parcours médical", 
+                   data$Tapplicda) & grepl("Uniquement dans les situations de fin de vie", 
+                   data$Tapplicda)
+
+question18 <- data[filtre18, ]
+
+table(question18$Tapplicda)
+
+# 165 n'ont pas fait les erreurs fonda et ont eu la réponse à ne pas oublier 
+
+rm(filtre18)
 -------------------------------------------------------------------------------
 
 # Question 19 
@@ -1893,7 +1912,7 @@ question16 <- data %>%
 question19 <- data %>%
   filter(Urgencepasda == "Oui")
 
-# 370 ont eu juste à cette question
+# 371 ont eu juste à cette question
 
 
 -------------------------------------------------------------------------------
@@ -1903,9 +1922,9 @@ question19 <- data %>%
 # Oui 
 
 question20 <- data %>%
-  filter(Pasda == "Oui")
+  filter(Urgencepasda == "Oui")
 
-# 199 personnes ont juste à cette question
+# 371 personnes ont juste à cette question
 
 -------------------------------------------------------------------------------
 
@@ -1914,13 +1933,56 @@ question20 <- data %>%
 # Des directives anticipées ***
 # ERREUR : l'avis des proches
 
-table(data$Applica1)
+table(data$Applic1)
 
 question21 <- data %>%
-  filter(Applica1 == "Des directives anticipées")
+  filter(Applic1 == "Des directives anticipées")
 
 # 427 personnes ont eu juste à cette question
 
+rm(reponses_correctes)
+rm(reponses_fonda)
+
+###############################################################################
+
+
+common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv, question19$Indiv, question20$Indiv, question21$Indiv))
+
+
+ligne <- subset(data, Indiv == 47)
+
+
+ligne <- as.data.frame(t(ligne))
+print(ligne)
+
+# Une seule personne connait globalement (n'a fait aucune erreur fondamentale
+# et n'a pas oublier les réponses obligatoires, même s'il a parfois répondu
+# d'autres réponses) toutes les modalités des directives anticipées sur 
+# tout l'échantillon, c'est un homme ouvrier entre 41 et 50 ans venant d'une
+# petite ville, avec une maladie chronique, un cancer. Il a rédigé ses DA. 
+
+-------------------------------------------------------------------------------
+  
+common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv, question19$Indiv, question20$Indiv))
+
+# En retirant la question 21 il reste le 47 et le 922
+
+
+-------------------------------------------------------------------------------
+
+common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv))
+
+# En retirant la question 20 et 19, il reste 47, 478, 847, 922
+
+
+-------------------------------------------------------------------------------
+
+common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question19$Indiv, question20$Indiv, question21$Indiv))
+
+# Je retire les questions 12 et 18 où il y a eu le moins de gens qui ont eu juste, 
+# moins de 170, il reste alors 54 individus. 
+
+merged_data <- subset(data, Indiv %in% common_individuals)
 
 
 ###############################################################################
