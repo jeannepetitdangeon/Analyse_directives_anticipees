@@ -19,7 +19,7 @@ library(stats)
 
 # Importation des données
 
-data <- read_excel("C:/Users/epcmic/OneDrive/Bureau/GitHub/Analyse_directives_anticipees/db.xlsx")
+data <- read_excel("C:/Users/GitHub/Analyse_directives_anticipees/db.xlsx")
 View(data)
 
 
@@ -31,8 +31,6 @@ View(data)
 
 print(colnames(data))
 data <- data[, -c(1, 3, 7, 12, 18, 19, 20, 21, 27, 28, 35, 36, 51)]
-
-
 
 # Simplification du nom des colonnes
 
@@ -48,7 +46,7 @@ colnames(data) <- c("Indiv", "Age", "Gender", "City", "CSP", "Medical", "Niveaum
 
 -------------------------------------------------------------------------------
 
-# Stat sur l'âge
+# Statistiques sur l'âge
 
 class(data$Age)
 
@@ -67,7 +65,6 @@ databis$age_category <- cut(data$Age, breaks = intervals, labels = labels,
                             include.lowest = TRUE)
 data$Age <- databis$age_category
 
-
 # Tri des NA en âge (trop jeune, erreur, non mentionné)
 
 datanona <- data.frame(data)
@@ -81,7 +78,6 @@ rm(intervals)
 rm(labels)
 rm(convert_age)
 
-# Statistique âge 
 
 table(data$Age)
 
@@ -104,6 +100,7 @@ table(data$Gender)
 790/(790+270)
 270/(790+270)
 # 75% de femmes et 25% d'hommes. Sur-représentation des femmes
+
 -------------------------------------------------------------------------------
 
 # Les villes
@@ -166,9 +163,7 @@ ggplot(niveau_counts_df, aes(x = "", y = Count, fill = Niveaumed)) +
 table(data$Malchro)
 # 803 personnes sans maladie chronique, 257 avec
 
-
 -------------------------------------------------------------------------------
-
   
 # Types de maladie chronique 
 
@@ -193,7 +188,6 @@ rm(niveau_counts_df)
 rm(niveau_counts)
 rm(csp_counts)
 
-
 -------------------------------------------------------------------------------
 
 # Entendu parler de la loi de fin de vie 
@@ -201,9 +195,7 @@ rm(csp_counts)
 table(data$Loifin)
 # 438 jamais entendu et 622 déjà entendu
 
-
 -------------------------------------------------------------------------------
-
 
 # Juste / Faux sur la loi de fin de vie 
 
@@ -211,7 +203,6 @@ table(data$Nomloi)
 
 # beaucoup de catégories différentes alors tri, on accepte seulement si il y a 
 # les deux mots "Claeys" et "Leonetti" 
-
 
 dataset <- data.frame(data$Nomloi)
   
@@ -236,18 +227,14 @@ table(data$Nomloi)
 # qui ont déjà entendu parler de la loi de fin de vie et qui ont répondu a la 
 # question. 
 
-
 --------------------------------------------------------------------------------
-
 
 # Qui connait les directives anticipées 
 
 table(data$Diranti)
 # 458 ne connaissent pas et 602 connaissent
 
-
 -------------------------------------------------------------------------------
-
 
 # Où ont-ils connu les directives anticipées ?
 
@@ -267,7 +254,6 @@ rm(reponses_sep)
 -------------------------------------------------------------------------------
 
 # Stat sur ce que représentent les directives anticipées 
-
 
 donnees <- data
 
@@ -301,7 +287,6 @@ print(top_reponses)
 # 16% et 14% chez les 41-60. La liberté est retrouvée dans 17,2% et 15,3% des réponses 
 # respectivement chez les 61-70 et les +70. 
 
-
 donnees <- donnees %>%
   separate_rows(Rpzda, sep = ",\\s*") %>%
   filter(!is.na(Rpzda))  
@@ -323,7 +308,6 @@ top_reponses <- resultats %>%
 top_reponses$Gender <- ifelse(top_reponses$Gender == 1, "Femme", "Homme")
 
 print(top_reponses)
-
 
 # Chez les hommes et les femmes, séparément, les quatre premiers mots sont un choix
 # Le respect, une anticipation, la liberté. Ensuite, pour les femmes, le 5ème mot 
@@ -356,7 +340,6 @@ print(top_reponses)
 # Un choix, le respect et là on a la liberté et une anticipation qui s'inversent 
 # chez l'un et chez l'autre puis un soulagement. Rien de vraiment analysable. 
  
-
 table(donnees$Rpzda)
 
 # En tout, 457 ont dit un choix, Une anticipation 354, 422 le respect, 325 la liberté, 
@@ -369,16 +352,13 @@ rm(resultats)
 rm(top_reponses)
 rm(reponses)
 
-
 -------------------------------------------------------------------------------
 
-  
 # Qui a rédigé DA 
 
 table(data$Vousda)
 # 77 ont rédigé leur DA sur le sous échantillon. A comparer aux stats nationales.
 # Regarder si ceux qui ont rédigé leurs DA ont eu juste aux questions. 
-
 
 reponses <- data %>%
   filter(!is.na(Vousda), Vousda == "Oui")
@@ -393,7 +373,6 @@ print(comptage_genre)
 
 # 13 sont des hommes et 64 sont des femmes. A regarder selon sur représentation
 # des femmes dans l'échantillon et acceptation de répondre au questionnaire.
-
 
 reponses <- data %>%
   filter(!is.na(Vousda), Vousda == "Oui")
@@ -448,15 +427,12 @@ print(comptes)
 
 
 
-
-
 ###############################################################################
 ###############################################################################
 ###############################################################################
 ###############################################################################
 
 #                       STATS, CORRELATIONS ET REGRESSIONS
-
 
 
 
@@ -505,7 +481,6 @@ rm(binaryredac)
   ##### AJOUTER COMPARAISON AVEC LES STATS DE LA BASE INITITALE 
   
 # Qui connait loifin selon age 
-
 
 reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
@@ -561,7 +536,6 @@ Number of Fisher Scoring iterations: 4
 # élevée de connaitre la loi par rapport à la catégorie 18-30, toutes choses étant 
 # égales par ailleurs. 
 
-
 -------------------------------------------------------------------------------
 
   
@@ -615,12 +589,9 @@ Number of Fisher Scoring iterations: 4
 # Etre une femme est positivement associé à la prob de répondre oui car p-value 
 # significative et coefficient supérieur à 0,57. 
 
-
 -------------------------------------------------------------------------------
-
   
 # Qui connait loifin selon ville 
-
 
 reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
@@ -647,7 +618,6 @@ summary(Reg)
 -------------------------------------------------------------------------------
 
 # Qui connait loifin selon CSP
-
 
 reponses <- data %>%
   filter(!is.na(Loifin), Loifin == "1")
@@ -685,12 +655,12 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)     -0.8210     0.2558  -3.209 0.001332 ** 
-  CSPAgriculteur -11.7451   324.7438  -0.036 0.971149    
+CSPAgriculteur -11.7451   324.7438  -0.036 0.971149    
 CSPArtisan       0.7697     0.4100   1.877 0.060468 .  
 CSPCadre sup     1.6661     0.2946   5.656 1.55e-08 ***
-  CSPEmployé       0.9226     0.2783   3.316 0.000915 ***
-  CSPProf inter    1.5796     0.2842   5.559 2.71e-08 ***
-  CSPSans acti     0.7985     0.3323   2.403 0.016253 *  
+CSPEmployé       0.9226     0.2783   3.316 0.000915 ***
+CSPProf inter    1.5796     0.2842   5.559 2.71e-08 ***
+CSPSans acti     0.7985     0.3323   2.403 0.016253 *  
   ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -705,7 +675,6 @@ Number of Fisher Scoring iterations: 11
 # Résultats intéressants ! ce qui est très significatif : Cadre sup est associé
 # positivement au fait de connaitre, employé aussi et prof inter aussi, par rapport 
 # à la catégorie de référence, ouvrier.
-
 
 -------------------------------------------------------------------------------
 
@@ -738,7 +707,6 @@ print(pourcentage)
 # cancer, 20,4% ont une maladie cardiovasc, 13,6% ont le diabète, 4,1% ont une 
 # maladie neurologique. Le reste n'a pas précisé la maladie. 
 
-
 cramer_coeff <- assocstats(table(data$Loifin, data$Malchro))$cramer
 print(cramer_coeff)
 # Il ne semble pas y avoir de corrélation entre le fait d'avoir une maladie chronique 
@@ -751,7 +719,6 @@ summary(Reg)
 
 # Pas de résultat intéressant sur la maladie chronique ici. Aucun résultat
 # significatif. 
-
 
 -------------------------------------------------------------------------------
   
@@ -829,11 +796,11 @@ Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)        -0.5108     0.5164  -0.989 0.322561    
 NiveaumedAS         1.7071     0.6057   2.818 0.004826 ** 
-  NiveaumedAutre      1.5325     0.5850   2.620 0.008803 ** 
-  NiveaumedEtudiant   3.1499     0.8958   3.516 0.000437 ***
-  NiveaumedIDE        3.4553     0.6908   5.002 5.68e-07 ***
-  NiveaumedMedecin    4.2244     1.1362   3.718 0.000201 ***
-  NiveaumedPharma     0.7520     0.6550   1.148 0.250927    
+NiveaumedAutre      1.5325     0.5850   2.620 0.008803 ** 
+NiveaumedEtudiant   3.1499     0.8958   3.516 0.000437 ***
+NiveaumedIDE        3.4553     0.6908   5.002 5.68e-07 ***
+NiveaumedMedecin    4.2244     1.1362   3.718 0.000201 ***
+NiveaumedPharma     0.7520     0.6550   1.148 0.250927    
 NiveaumedPsy        1.2040     1.3292   0.906 0.365034    
 NiveaumedSecr       0.9163     0.6892   1.329 0.183685    
 ---
@@ -1053,7 +1020,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)  -3.9120     0.4516  -8.662  < 2e-16 ***
-  Medical1      1.9255     0.4906   3.925 8.67e-05 ***
+Medical1      1.9255     0.4906   3.925 8.67e-05 ***
   ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1119,7 +1086,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)  
 (Intercept)    0.27958    0.11900   2.349   0.0188 *
-  Age31-40       0.10289    0.18242   0.564   0.5727  
+Age31-40       0.10289    0.18242   0.564   0.5727  
 Age41-50      -0.12701    0.18597  -0.683   0.4946  
 Age51-60      -0.06517    0.18386  -0.354   0.7230  
 Age61-70      -0.24036    0.23107  -1.040   0.2982  
@@ -1151,7 +1118,7 @@ print(pourcentage)
 
 Gender Percentage
 <fct>       <dbl>
-  1 0            18.3
+1 0            18.3
 2 1            81.7
 
 
@@ -1173,7 +1140,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)  -0.3747     0.1239  -3.025  0.00248 ** 
-  Gender1       0.8761     0.1440   6.085 1.17e-09 ***
+Gender1       0.8761     0.1440   6.085 1.17e-09 ***
   ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1229,7 +1196,7 @@ print(pourcentage)
 
 CSP        Percentage
 <fct>           <dbl>
-  1 Ouvrier          3.32
+1 Ouvrier          3.32
 2 Artisan          2.33
 3 Cadre sup       23.4 
 4 Employé         28.6 
@@ -1253,12 +1220,12 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)     -0.9555     0.2631  -3.632 0.000282 ***
-  CSPAgriculteur -11.6106   324.7438  -0.036 0.971479    
+CSPAgriculteur -11.6106   324.7438  -0.036 0.971479    
 CSPArtisan       0.3757     0.4250   0.884 0.376751    
 CSPCadre sup     1.4976     0.2975   5.033 4.82e-07 ***
-  CSPEmployé       1.0093     0.2849   3.542 0.000397 ***
-  CSPProf inter    1.8076     0.2917   6.197 5.76e-10 ***
-  CSPSans acti     0.9330     0.3379   2.761 0.005758 ** 
+CSPEmployé       1.0093     0.2849   3.542 0.000397 ***
+CSPProf inter    1.8076     0.2917   6.197 5.76e-10 ***
+CSPSans acti     0.9330     0.3379   2.761 0.005758 ** 
   ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1285,7 +1252,7 @@ print(pourcentage)
   
 Malchro Percentage
 <dbl>      <dbl>
-  1       0       77.1
+1       0       77.1
 2       1       22.9 
   
   
@@ -1300,7 +1267,7 @@ print(pourcentage)
 
 Typemalchro Percentage
 <chr>            <dbl>
-  1 Auto              1.45
+1 Auto              1.45
 2 Autre            26.1 
 3 Cancer           14.5 
 4 Cardiovasc       18.8 
@@ -1349,7 +1316,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept) -0.28185    0.07634  -3.692 0.000223 ***
-  Medical1     1.91142    0.16155  11.831  < 2e-16 ***
+Medical1     1.91142    0.16155  11.831  < 2e-16 ***
   ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1377,11 +1344,11 @@ Coefficients:
   Estimate Std. Error z value Pr(>|z|)   
 (Intercept)       -3.791e-15  5.000e-01   0.000  1.00000   
 NiveaumedAS        1.409e+00  6.026e-01   2.338  0.01940 * 
-  NiveaumedAutre     1.350e+00  5.830e-01   2.315  0.02060 * 
-  NiveaumedEtudiant  2.197e+00  7.876e-01   2.790  0.00528 **
-  NiveaumedIDE       1.957e+01  1.075e+03   0.018  0.98548   
+NiveaumedAutre     1.350e+00  5.830e-01   2.315  0.02060 * 
+NiveaumedEtudiant  2.197e+00  7.876e-01   2.790  0.00528 **
+NiveaumedIDE       1.957e+01  1.075e+03   0.018  0.98548   
 NiveaumedMedecin   2.565e+00  7.804e-01   3.287  0.00101 **
-  NiveaumedPharma   -2.412e-01  6.421e-01  -0.376  0.70724   
+NiveaumedPharma   -2.412e-01  6.421e-01  -0.376  0.70724   
 NiveaumedPsy       6.931e-01  1.323e+00   0.524  0.60030   
 NiveaumedSecr      1.099e+00  7.188e-01   1.528  0.12641   
 ---
@@ -1412,7 +1379,7 @@ print(pourcentage)
 
 Age        Percentage
 <fct>           <dbl>
-  1 18-30           20.8 
+1 18-30           20.8 
 2 31-40           22.1 
 3 41-50            9.09
 4 51-60           24.7 
@@ -1438,7 +1405,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)    -2.2246     0.2632  -8.453   <2e-16 ***
-  Age31-40        0.3483     0.3703   0.941   0.3468    
+Age31-40        0.3483     0.3703   0.941   0.3468    
 Age41-50       -0.4144     0.4715  -0.879   0.3794    
 Age51-60        0.6473     0.3644   1.776   0.0757 .  
 Age61-70        0.6606     0.4512   1.464   0.1432    
@@ -1490,7 +1457,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)  -2.0098     0.2953  -6.805 1.01e-11 ***
-  Gender1       0.1260     0.3244   0.388    0.698    
+Gender1       0.1260     0.3244   0.388    0.698    
 ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1520,7 +1487,7 @@ print(pourcentage)
 
 City             Percentage
 <fct>                 <dbl>
-  1 Un village             46.8
+1 Un village             46.8
 2 Une grande ville       27.3
 3 Une petite ville       26.0
 
@@ -1541,7 +1508,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)          -1.94987    0.17813 -10.946   <2e-16 ***
-  CityUne grande ville  0.22371    0.29635   0.755     0.45    
+CityUne grande ville  0.22371    0.29635   0.755     0.45    
 CityUne petite ville -0.04483    0.29754  -0.151     0.88    
 ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
@@ -1572,7 +1539,7 @@ print(pourcentage)
 
 CSP        Percentage
 <fct>           <dbl>
-  1 Cadre sup       23.4 
+1 Cadre sup       23.4 
 2 Employé         33.8 
 3 Prof inter      33.8 
 4 Sans acti        9.09
@@ -1615,7 +1582,7 @@ print(pourcentage)
 
 Typemalchro Percentage
 <chr>            <dbl>
-  1 Autre            34.6 
+1 Autre            34.6 
 2 Cancer           19.2 
 3 Cardiovasc       19.2 
 4 Diabete          11.5 
@@ -1639,7 +1606,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept)  -2.0770     0.1485 -13.983   <2e-16 ***
-  Malchro       0.6256     0.2637   2.372   0.0177 *  
+Malchro       0.6256     0.2637   2.372   0.0177 *  
   ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1669,7 +1636,7 @@ print(pourcentage)
 
 Medical Percentage
 <fct>        <dbl>
-  1 0             48.1
+1 0             48.1
 2 1             51.9
 
 cramer_coeff <- assocstats(table(data$Vousda, data$Medical))$cramer
@@ -1689,7 +1656,7 @@ Deviance Residuals:
 Coefficients:
   Estimate Std. Error z value Pr(>|z|)    
 (Intercept) -1.94976    0.17571 -11.097   <2e-16 ***
-  Medical1     0.08568    0.24444   0.351    0.726    
+Medical1     0.08568    0.24444   0.351    0.726    
 ---
   Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
@@ -1810,7 +1777,6 @@ rm(reponses_sep)
 # ERREUR FONDAMENTALE : Les majeurs et les mineurs 
 
 
-
 filtre11 <- !grepl("Les majeurs et les mineurs", data$Concernda) & 
   !is.na(data$Concernda) & grepl("Toutes les personnes majeures", data$Concernda)
 question11 <- data[filtre11, ]
@@ -1917,17 +1883,6 @@ question19 <- data %>%
 
 -------------------------------------------------------------------------------
 
-# Question 20 
-
-# Oui 
-
-question20 <- data %>%
-  filter(Urgencepasda == "Oui")
-
-# 371 personnes ont juste à cette question
-
--------------------------------------------------------------------------------
-
 # Question 21 
 
 # Des directives anticipées ***
@@ -1946,7 +1901,7 @@ rm(reponses_fonda)
 ###############################################################################
 
 
-common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv, question19$Indiv, question20$Indiv, question21$Indiv))
+common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv, question19$Indiv, question21$Indiv))
 
 
 ligne <- subset(data, Indiv == 47)
@@ -1963,7 +1918,7 @@ print(ligne)
 
 -------------------------------------------------------------------------------
   
-common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv, question19$Indiv, question20$Indiv))
+common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv, question19$Indiv))
 
 # En retirant la question 21 il reste le 47 et le 922
 
@@ -1972,12 +1927,12 @@ common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv,
 
 common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question12$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question18$Indiv))
 
-# En retirant la question 20 et 19, il reste 47, 478, 847, 922
+# En retirant la question 19, il reste 47, 478, 847, 922
 
 
 -------------------------------------------------------------------------------
 
-common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question19$Indiv, question20$Indiv, question21$Indiv))
+common_individuals <- Reduce(intersect, list(question10$Indiv, question11$Indiv, question14$Indiv, question15$Indiv, question16$Indiv, question19$Indiv, question21$Indiv))
 
 # Je retire les questions 12 et 18 où il y a eu le moins de gens qui ont eu juste, 
 # moins de 170, il reste alors 54 individus. 
@@ -2045,7 +2000,6 @@ table(data$Plusinfoda)
 
 table(data$Plusexplida)
 # 231 ne veulent pas d'explications sur les termes médicaux en plus, 804 oui.
-
 
 -------------------------------------------------------------------------------
 
@@ -2146,10 +2100,8 @@ cat("Nombre de lignes contenant le mot 'psy':", compteur, "\n")
 
 # Médecin traitant doit être cet interlocuteur ? 
   
-
 table(data$infomedecin)  
 # 42 pensent que non, 997 pensent que oui. 
-
 
 -------------------------------------------------------------------------------
   
