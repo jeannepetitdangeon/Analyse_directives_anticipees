@@ -16,10 +16,11 @@ library(stringdist)
 library(stringr)
 library(vcd)
 library(stats)
+library(RColorBrewer)
 
 # Importation des données
 
-data <- read_excel("C:/Users/GitHub/Analyse_directives_anticipees/db.xlsx")
+data <- read_excel("C:/Users/epcmic/OneDrive/Bureau/GitHub/Analyse_directives_anticipees/db.xlsx")
 View(data)
 
 
@@ -30,13 +31,13 @@ View(data)
 # Suppression de variables non comprises dans les régressions
 
 print(colnames(data))
-data <- data[, -c(1, 3, 7, 12, 18, 19, 20, 21, 27, 28, 35, 36, 51)]
+data <- data[, -c(1, 3, 18, 19, 20, 21, 27, 28, 35, 36, 51)]
 
 # Simplification du nom des colonnes
 
 print(colnames(data))
-colnames(data) <- c("Indiv", "Age", "Gender", "City", "CSP", "Medical", "Niveaumed",
-                  "Malchro", "Typemalchro", "Loifin", "Nomloi", "Diranti", 
+colnames(data) <- c("Indiv", "Age", "Gender", "City", "Job", "CSP", "Medical", "Niveaumed",
+                  "Malchro", "Nommalchro", "Typemalchro", "Loifin", "Nomloi", "Diranti", 
                   "Dirantibis", "Contextmedecin", "Rpzda", "Infoda", "Concernda",
                   "Redacda", "Conservda", "Valida", "Modifda", "Avantageda",
                   "Tapplicda", "Urgencepasda", "Applic1", "Vousda", "Vousdanon",
@@ -120,13 +121,37 @@ csp_counts <- table(data$CSP)
 csp_counts_df <- as.data.frame(csp_counts)
 colnames(csp_counts_df) <- c("CSP", "Count")
 
+nouvelles_categories <- c("Agriculteur", "Artisan", "Cadre Supérieur", 
+                          "Employé", "Ouvrier", "Profession intermédiaire",
+                          "Sans activité")
+
 ggplot(csp_counts_df, aes(x = "", y = Count, fill = CSP)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start = 0) +
   xlab("") +
   ylab("") +
   ggtitle("Répartition des CSP") +
-  scale_fill_brewer(palette = "Set3")
+  scale_fill_manual(values = brewer.pal(length(nouvelles_categories), "Set3"),
+                    labels = nouvelles_categories) +
+  guides(fill = guide_legend(title = "CSP")) +
+  scale_x_discrete(labels = nouvelles_categories)
+
+
+# Liste des jobs par CSP et suppression des doublons pour le tableau
+
+groupes <- split(data$Job, data$CSP)
+
+for (categorie in names(groupes)) {
+  cat("Catégorie", categorie, ":\n")
+  reponses_uniques <- unique(groupes[[categorie]])
+  reponses_doublons <- groupes[[categorie]][duplicated(groupes[[categorie]])]
+  cat(paste(reponses_uniques, collapse = "\n"), "\n")
+  if (length(reponses_doublons) > 0) {
+    cat("Réponses en doublon :", paste(reponses_doublons, collapse = ", "), "\n")
+  }
+  cat("\n")
+}
+
 
 -------------------------------------------------------------------------------
 
@@ -142,19 +167,42 @@ table(data$Medical)
 
 table(data$Niveaumed)
 
-
 niveau_counts <- table(data$Niveaumed)
-
 niveau_counts_df <- as.data.frame(niveau_counts)
 colnames(niveau_counts_df) <- c("Niveaumed", "Count")
+
+nouvelles_categories <- c("AS", "ASH", "Autre", "Etudiant", "IDE", "Médecin",
+                          "Pharmacie", "Secrétaire")
+
+couleurs <- brewer.pal(length(nouvelles_categories), "Pastel1")
 
 ggplot(niveau_counts_df, aes(x = "", y = Count, fill = Niveaumed)) +
   geom_bar(stat = "identity", width = 1) +
   coord_polar("y", start = 0) +
   xlab("") +
   ylab("") +
-  ggtitle("Répartition des niveaux dans le milieu de la santé") +
-  scale_fill_brewer(palette = "Pastel1")
+  ggtitle("Domaines d'expertise du milieu de la santé") +
+  scale_fill_manual(values = couleurs, labels = nouvelles_categories,
+                    name = "Niveaumed") +
+  scale_x_discrete(labels = nouvelles_categories)
+
+
+
+# Tableau avec chaque métier dans chaque catégorie
+
+groupes <- split(data$Job, data$Niveaumed)
+
+for (categorie in names(groupes)) {
+  cat("Catégorie", categorie, ":\n")
+  reponses_uniques <- unique(groupes[[categorie]])
+  reponses_doublons <- groupes[[categorie]][duplicated(groupes[[categorie]])]
+  cat(paste(reponses_uniques, collapse = "\n"), "\n")
+  if (length(reponses_doublons) > 0) {
+    cat("Réponses en doublon :", paste(reponses_doublons, collapse = ", "), "\n")
+  }
+  cat("\n")
+}
+
 
 -------------------------------------------------------------------------------
 
@@ -169,17 +217,40 @@ table(data$Malchro)
 
 table(data$Typemalchro)
 
-categorie_counts <- table(data$Typemalchro)
-categorie_counts_df <- as.data.frame(categorie_counts)
-
+table_counts <- table(data$Typemalchro)
+categorie_counts_df <- as.data.frame(table_counts)
 colnames(categorie_counts_df) <- c("Type de maladie chronique", "Count")
+
+nouvelles_categories <- c("Auto-immune", "Autre", "Cancer", "Cardiovasculaire",
+                          "Diabète", "Neurologique")
+
+couleurs <- c("#E41A1C", "#377EB8", "#4DAF4A", "#984EA3", "#FF7F00", "#FFFF33")
 
 ggplot(categorie_counts_df, aes(x = `Type de maladie chronique`, y = Count, 
                                 fill = `Type de maladie chronique`)) +
   geom_bar(stat = "identity") +
   xlab("Type de maladie chronique") +
   ylab("Nombre de personnes") +
-  ggtitle("Répartition des types de maladie chronique")
+  ggtitle("Répartition des types de maladie chronique") +
+  scale_fill_manual(values = couleurs, labels = nouvelles_categories,
+                    name = "Type de maladie chronique") +
+  scale_x_discrete(labels = nouvelles_categories)
+
+
+# Tableau des maladies dans chaque catégorie 
+
+groupes <- split(data$Nommalchro, data$Typemalchro)
+
+for (categorie in names(groupes)) {
+  cat("Catégorie", categorie, ":\n")
+  reponses_uniques <- unique(groupes[[categorie]])
+  reponses_doublons <- groupes[[categorie]][duplicated(groupes[[categorie]])]
+  cat(paste(reponses_uniques, collapse = "\n"), "\n")
+  if (length(reponses_doublons) > 0) {
+    cat("Réponses en doublon :", paste(reponses_doublons, collapse = ", "), "\n")
+  }
+  cat("\n")
+}
 
 rm(categorie_counts_df)
 rm(categorie_counts)
@@ -282,10 +353,7 @@ print(top_reponses)
 # Puis "Le respect". Ensuite, en troisième, chez les 18-30 et 31-40 et 41-50 c'est 
 # une anticipation,à partir de 61ans et jusqu'aux plus âgés, le troisième mot qui
 # Revient le plus est la liberté. 
-# Le mot choix est retrouvé dans 20% des réponses chez les jeunes, 24,5% chez les 
-# 61-70. Une anticipation est autour des 18% chez les 18-40 puis passe autour de 
-# 16% et 14% chez les 41-60. La liberté est retrouvée dans 17,2% et 15,3% des réponses 
-# respectivement chez les 61-70 et les +70. 
+
 
 donnees <- donnees %>%
   separate_rows(Rpzda, sep = ",\\s*") %>%
@@ -373,6 +441,7 @@ print(comptage_genre)
 
 # 13 sont des hommes et 64 sont des femmes. A regarder selon sur représentation
 # des femmes dans l'échantillon et acceptation de répondre au questionnaire.
+# A checker sur le groupe. /!!!!!!!!!!\
 
 reponses <- data %>%
   filter(!is.na(Vousda), Vousda == "Oui")
